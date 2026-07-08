@@ -22,7 +22,6 @@ def update_dependencies() -> None:  # Get current installed versions
     # Read pyproject.toml (preserves formatting)
     with open("pyproject.toml", "r") as f:
         data = tomlkit.load(f)
-        print(data)
 
     # Update dependencies
     project = cast(Table, data["project"])
