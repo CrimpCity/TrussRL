@@ -22,6 +22,7 @@ def update_dependencies() -> None:  # Get current installed versions
     # Read pyproject.toml (preserves formatting)
     with open("pyproject.toml", "r") as f:
         data = tomlkit.load(f)
+        print(data)
 
     # Update dependencies
     project = cast(Table, data["project"])
@@ -94,5 +95,5 @@ def update_dependencies() -> None:  # Get current installed versions
     print("Review it, then replace the original if it looks good.")
 
 
-if __name__ == "**main**":
+if __name__ == "__main__":
     update_dependencies()
