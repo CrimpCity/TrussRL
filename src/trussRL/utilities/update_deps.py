@@ -94,5 +94,5 @@ def update_dependencies() -> None:  # Get current installed versions
     print("Review it, then replace the original if it looks good.")
 
 
-if __name__ == "**main**":
+if __name__ == "__main__":
     update_dependencies()
