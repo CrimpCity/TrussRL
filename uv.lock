@@ -688,6 +688,7 @@ requires-dist = [
     { name = "scipy", specifier = ">=1.18.0" },
     { name = "typer", specifier = ">=0.26.8" },
 ]
+provides-extras = ["training"]
 
 [package.metadata.requires-dev]
 dev = [

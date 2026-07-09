@@ -17,6 +17,10 @@ dependencies = [
     "typer>=0.26.8",
 ]
 
+# RL deps (torch/vllm/trainer) land here at Phase 3; only trussRL.training may import them.
+[project.optional-dependencies]
+training = []
+
 [dependency-groups]
 dev = [
     "isort>=8.0.1",
