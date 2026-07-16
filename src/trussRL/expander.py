@@ -31,8 +31,7 @@ class Member:
 
     Assumptions:
         1. The unbraced length equals the geometric length with K = 1.0 in
-           both planes — conservative and consistent across all designs
-           (vision.md section 5).
+           both planes — conservative and consistent across all designs.
 
     Attributes:
         id: zero-based member identifier, unique within a geometry
@@ -85,9 +84,9 @@ def validate_expander_inputs(span_ft: float, n_bays: int, depth_ft: float) -> No
     """Reject inputs for which no geometry can be constructed.
 
     Assumptions:
-        1. Only guards constructibility (positive dimensions, at least one
-           bay); range policing such as the 4-24 bay window and depth ratio
-           limits is the DRC layer's job (vision.md section 6).
+        1. Only guards constructibility (positive dimensions, at least one bay);
+           range policing such as the 4-24 bay window and depth ratio limits is the DRC
+           layer's job.
 
     Args:
         span_ft: truss span in feet
@@ -120,8 +119,7 @@ def expand_warren(span_ft: float, n_bays: int, depth_ft: float) -> TrussGeometry
 
     Assumptions:
         1. Supports are a pin at the left bottom node and a roller at the
-           right bottom node; all horizontal load exits through the pin
-           (vision.md section 1).
+           right bottom node; all horizontal load exits through the pin.
 
     Args:
         span_ft: truss span in feet
