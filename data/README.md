@@ -2,6 +2,6 @@
 
 Frozen input data committed to git.
 
-- `aisc_hss.csv` (Module 1) — the section catalog, single source of truth
-  for member properties. Once frozen, changing it invalidates committed
-  calibration artifacts (they are stamped with the catalog hash).
+- `HSS.csv` — the full AISC Shape Database v16 HSS export
+- `HSS_square.csv` / `HSS_rectangular.csv` / `HSS_round.csv` — shape-family splits of `HSS.csv`
+- `HSS_subset.csv` — the frozen 40-shape section catalog
