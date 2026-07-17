@@ -1,5 +1,5 @@
-"""Uniform random design sampler.
+"""Uniform random designs: the floor everything else is measured against.
 
-Samples uniformly over the design space (enum x int x continuous x
-catalog), used by the calibration sweep and to establish sweep_best.
+Seeded sampling over the whole design space feeds calibration — the score
+distributions behind the sanity gates and the frozen grading constants.
 """

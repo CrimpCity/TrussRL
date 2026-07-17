@@ -1,14 +1,11 @@
-"""Extract a uniformly spaced subset of the rectangular and square HSS catalogs.
+"""Pick the frozen 40-shape subset the policy designs with.
 
-Reads the frozen ``data/HSS_rectangular.csv`` and ``data/HSS_square.csv``
-catalogs, sorts each family by strong-axis moment of inertia (imperial
-``Ix``), selects 20 rows per family spread uniformly across its sorted
-range — including the smallest and largest sections of each — and writes
-the 40 combined rows in ascending-Ix order to ``data/HSS_subset.csv``,
-preserving the original column layout and field strings.
+Selects square and rectangular HSS shapes spread uniformly across the
+stiffness range, endpoints included — a catalog broad enough that section
+choice is a real decision, small enough to fit in a prompt.
 
 Usage:
-python -m scripts.hss_subset
+    python -m scripts.hss_subset
 """
 
 from pathlib import Path

@@ -1,10 +1,9 @@
-"""Load conversion and self-weight (starting.md Module 3).
+"""Turn the stated loads into nodal forces the solver can apply.
 
-Converts deck line loads and concentrated longitudinal forces into
-panel-point nodal loads and adds a single-pass self-weight from the chosen
-sections. Sign convention throughout: global +X points from the pin toward
-the roller, global +Y points up, so downward forces are negative. Outputs
-are in kips, directly consumable by the OpenSees wall (ndm=2, ndf=2).
+Line loads become panel-point forces via tributary widths, then gain weight
+from the chosen sections in a single deterministic pass — no iteration, so
+identical designs always see identical loads. Coordinates run from pin to
+roller, +Y up, forces in kips.
 """
 
 from collections.abc import Mapping, Sequence

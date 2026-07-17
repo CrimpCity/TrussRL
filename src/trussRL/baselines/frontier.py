@@ -1,6 +1,5 @@
-"""Frontier-model API baseline (starting.md Module 8).
+"""Frontier models as a baseline: is there headroom worth training for?
 
-Samples designs from frontier models via API for the go/no-go check,
-one-shot, and best-of-k eval rows; retains verifier-passing rollouts for
-potential cold-start SFT.
+Samples designs from frontier APIs for the go/no-go check and the eval
+table; verifier-passing rollouts are kept as free cold-start SFT data.
 """

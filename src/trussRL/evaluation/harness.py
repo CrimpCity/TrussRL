@@ -1,5 +1,6 @@
-"""Evaluation harness (vision.md section 10).
+"""Run every contender over the same prompts and build the comparison table.
 
-Runs every baseline row (random, heuristic, frontier one-shot/best-of-k,
-trained policy) over a fixed eval set and produces the comparison table.
+Random, heuristic, frontier, and trained policy are all scored by the
+identical verifier on identical prompts, so the table compares models, not
+harnesses.
 """

@@ -1,6 +1,6 @@
-"""Baselines CLI (starting.md Module 8).
+"""Run the non-RL baselines and answer: is training worth doing?
 
-Thin typer CLI: run the heuristic engineer and the frontier-model
-go/no-go check, retaining verifier-passing frontier rollouts for
-potential cold-start SFT.
+Scores the scripted heuristic engineer and frontier models with the same
+verifier the policy will face; verifier-passing frontier rollouts are kept
+as cold-start SFT candidates.
 """

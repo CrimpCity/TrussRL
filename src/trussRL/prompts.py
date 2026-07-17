@@ -1,5 +1,5 @@
-"""Prompt construction.
+"""Render an instance into the prompt the policy sees.
 
-Renders a ``TrussInstance`` into the prompt text shown to the policy,
-using the template defined in vision.md section 2.
+Everything the reward grades appears verbatim in the prompt text — the
+policy is only ever scored on what it was shown.
 """

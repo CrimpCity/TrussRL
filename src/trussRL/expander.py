@@ -1,8 +1,10 @@
-"""Geometry expander.
+"""Turn a handful of numbers into a truss: nodes, members, supports, lengths.
 
-Expands a validated design dict into nodes, members, supports, and
-unbraced lengths, dispatching on typology. The single geometry source of truth shared
-by the reward pipeline, calibration, heuristic baseline, and eval harness.
+The policy never emits coordinates — it picks a typology and a few
+parameters, and the expander builds the geometry deterministically, which
+eliminates the malformed-geometry failure surface. One expander means
+scoring, calibration, and baselines can never disagree about what structure
+a design describes.
 """
 
 import math

@@ -1,5 +1,5 @@
-"""Trainer reward adapter.
+"""The adapter between the pure verifier and the training framework.
 
-Adapts the pure ``trussRL.verifier.score`` entry point to the reward-fn
-signature of whichever RL framework is chosen at Phase 3.
+The verifier stays framework-agnostic; this shim is the only place their
+interfaces meet.
 """
