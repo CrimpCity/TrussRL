@@ -1,6 +1,6 @@
-"""Conditional cold-start SFT (Phase 3).
+"""Cold-start SFT, run only if the base model cannot emit parseable designs.
 
-Supervised fine-tuning from verifier-passing frontier rollouts, run only
-if the base-model rollout gate (starting.md Module 9) says the policy
-cannot reliably emit parseable designs.
+A short supervised phase on verifier-passing frontier rollouts to bootstrap
+output format — kept minimal because every SFT token risks anchoring the
+policy to the teacher's heuristics.
 """

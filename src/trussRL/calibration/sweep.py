@@ -1,5 +1,6 @@
-"""Calibration sweep (starting.md Module 7).
+"""Score thousands of random designs to see what the reward actually does.
 
-Runs N random designs through the verifier and collects score
-distributions per instance.
+The collected distributions are the evidence behind the sanity gates and the
+basis for the frozen grading constants — measured before training, so
+environment bugs and training dynamics are never debugged at the same time.
 """

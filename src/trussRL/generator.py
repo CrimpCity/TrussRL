@@ -1,6 +1,6 @@
-"""Procedural instance generator (vision.md section 11).
+"""The generator is the dataset: seeded procedural instance creation.
 
-Seeded, reproducible generation of ``TrussInstance`` objects with
-difficulty knobs, following the reasoning-gym dataset framing: the
-generator is the dataset.
+Spans, loads, and limits are difficulty knobs rather than fixed examples —
+infinite fresh instances, reproducible from a seed, with difficulty
+schedulable during training.
 """

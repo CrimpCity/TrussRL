@@ -1,8 +1,9 @@
-"""Section catalog.
+"""The frozen section catalog: every property a design needs, in one lookup.
 
-Section records built from auto generated module which is single source of truth for
-member properties (area, radius of gyration, weight, cost) used by self-weight,
-capacity checks, and cost computation.
+One typed lookup from designation to area, radii of gyration, weight, and
+cost is shared by self-weight, slenderness, capacity, and cost computations.
+Restricting the policy to a curated catalog means nothing needs to be
+invented — the catalog is itself a design-rule check.
 """
 
 from collections.abc import Mapping

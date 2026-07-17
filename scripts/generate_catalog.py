@@ -1,12 +1,7 @@
-"""Generate the python object section catalog from the frozen HSS subset.
+"""Freeze the catalog: render the HSS subset CSV as an importable module.
 
-Reads the frozen ``data/HSS_subset.csv`` catalog and writes
-``src/trussRL/catalog_data.py`` — a generated Python module holding one
-dict entry per shape with every property that parses as a float,
-plus a derived ``cost_per_ft_usd``.
-
-Rendering is deterministic (CSV row order, ``repr`` floats, one key per line)
-so re-running on an unchanged CSV is idempotent.
+Deterministic codegen — re-running on unchanged data is idempotent, so the
+catalog can be hashed and stamped into calibration artifacts.
 
 Usage:
     python -m scripts.generate_catalog

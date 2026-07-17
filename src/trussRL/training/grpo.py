@@ -1,5 +1,5 @@
-"""GRPO training loop (Phase 3).
+"""The GRPO training loop.
 
-Framework is chosen at Phase 3; this module owns the training loop and
-its configuration.
+Owns policy optimization and its configuration; everything it needs from
+the environment arrives through the reward adapter, never the reverse.
 """

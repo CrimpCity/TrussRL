@@ -1,6 +1,6 @@
-"""Visually check the expander.
+"""Draw what the expander built, so geometry bugs are seen rather than inferred.
 
-CLI to plot nodes/members of input design to visually verify the generated geometry.
+Dev-only spot check on samples — never part of scoring.
 """
 
 from pathlib import Path

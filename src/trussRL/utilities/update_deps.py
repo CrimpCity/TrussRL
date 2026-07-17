@@ -1,5 +1,10 @@
-"""
-python -m src.trussRL.utilities.update_deps
+"""Bump pyproject lower-bound pins to the currently installed versions.
+
+Dev-only maintenance; writes new_pyproject.toml for review instead of
+editing in place.
+
+Usage:
+    python -m src.trussRL.utilities.update_deps
 """
 
 import re

@@ -1,12 +1,11 @@
 """Split the AISC HSS catalog by cross-section shape.
 
-Reads the frozen ``data/HSS.csv`` catalog and writes three filtered CSVs — one
-each for square, rectangular, and round hollow structural sections — preserving
-the original table exactly (same columns, same field strings) and only
-partitioning the rows.
+First stage of building the frozen catalog: partitions data/HSS.csv into
+square, rectangular, and round CSVs byte-faithfully, so every later stage
+works from exact, untouched AISC data.
 
 Usage:
-python -m scripts.hss_filter
+    python -m scripts.hss_filter
 """
 
 from pathlib import Path

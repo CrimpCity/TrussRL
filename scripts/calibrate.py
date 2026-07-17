@@ -1,7 +1,6 @@
-"""Calibration CLI (starting.md Module 7).
+"""Produce the frozen grading constants — the ground truth for training.
 
-Thin typer CLI: run 5k+ random designs through the verifier, apply the
-vision.md section 9 sanity gates, and write the frozen ``cost_ref`` and
-``sweep_best`` values (stamped with git SHA + catalog hash) to
-``artifacts/``.
+Runs thousands of random designs through the verifier, applies the sanity
+gates, and writes cost_ref and sweep_best to artifacts/, stamped so every
+result traces to an exact code and catalog state.
 """

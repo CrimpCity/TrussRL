@@ -1,6 +1,6 @@
-"""Calibration sanity gates (vision.md section 9).
+"""Sanity gates that must pass before any training run.
 
-Checks sweep distributions against the section 9 gates and computes the
-frozen ``cost_ref`` and ``sweep_best`` values committed to ``artifacts/``.
-These constants must never be policy-dependent.
+Check that reward is not saturated, variance is healthy, and the optimum is
+interior rather than pegged at a bound — then freeze cost_ref and
+sweep_best, which must never depend on the policy.
 """
