@@ -9,12 +9,13 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "matplotlib>=3.11.0",
     "numpy>=2.5.1",
+    "openseespy>=3.8.0.0",
     "pandas>=3.0.3",
     "pydantic>=2.13.4",
     "python-dotenv>=1.2.2",
     "rich>=15.0.0",
     "scipy>=1.18.0",
-    "typer>=0.26.8",
+    "typer>=0.27.0",
 ]
 
 # RL deps (torch/vllm/trainer) land here at Phase 3; only trussRL.training may import them.
@@ -24,13 +25,13 @@ training = []
 [dependency-groups]
 dev = [
     "isort>=8.0.1",
-    "mypy>=2.2.0",
+    "mypy>=2.3.0",
     "pre-commit>=4.6.0",
     "pytest-asyncio>=1.4.0",
     "pytest>=9.1.1",
-    "ruff>=0.15.20",
+    "ruff>=0.15.22",
     "taplo>=0.9.3",
-    "tomlkit>=0.15.0",
+    "tomlkit>=0.15.1",
 ]
 
 [build-system]
