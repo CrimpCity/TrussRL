@@ -5,9 +5,17 @@ and validation failures land on reward ladder rung 0 instead of raising, so
 malformed output is a training signal, never a crash.
 """
 
+import json
+import re
 from dataclasses import dataclass
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError
+
+from trussRL.catalog import has_section
+
+FENCED_BLOCK_PATTERN = re.compile(
+    r"```(?:json)?\s*(.*?)\s*```", re.IGNORECASE | re.DOTALL
+)
 
 
 class TrussDesign(BaseModel):
@@ -75,12 +83,83 @@ class ParseFailure:
     reason: str
 
 
+def extract_last_json_object(text: str) -> object | None:
+    """Decode the last top-level JSON object embedded in free text.
+
+    Assumptions:
+        1. Fallback for completions that skip the fenced-block format:
+           scans every "{" and keeps the last span that decodes, so a
+           correct design without fences is still scored on its merits.
+        2. Objects nested inside an already-decoded object are not
+           considered top-level and cannot shadow their container.
+
+    Args:
+        text: raw completion text with no usable fenced block
+
+    Returns:
+        object: the decoded value of the last balanced JSON object, or
+            None when no substring decodes
+    """
+    decoder = json.JSONDecoder()
+    found: object | None = None
+    index = text.find("{")
+    while index != -1:
+        try:
+            value, end = decoder.raw_decode(text, index)
+        except json.JSONDecodeError:
+            index = text.find("{", index + 1)
+            continue
+        found = value
+        index = text.find("{", end)
+    return found
+
+
+def decode_design_payload(completion_text: str) -> object | ParseFailure:
+    """Locate and decode the design JSON payload in completion text.
+
+    Assumptions:
+        1. Fenced blocks are authoritative when present: the last block
+           that decodes wins (models restate examples early, the final
+           block is the answer), and if every block is malformed that is
+           the failure — no rescue from surrounding prose.
+        2. Without any fenced block, extraction is lenient: the last
+           balanced JSON object anywhere in the text is used.
+
+    Args:
+        completion_text: the policy's full completion, optional reasoning
+            followed by the design JSON
+
+    Returns:
+        object: the decoded JSON value, or ParseFailure when no block is
+            found or the block content is malformed
+    """
+    blocks = FENCED_BLOCK_PATTERN.findall(completion_text)
+    last_error: json.JSONDecodeError | None = None
+    for block in reversed(blocks):
+        try:
+            decoded: object = json.loads(block)
+            return decoded
+        except json.JSONDecodeError as error:
+            if last_error is None:
+                last_error = error
+    if last_error is not None:
+        return ParseFailure(f"malformed JSON in fenced block: {last_error}")
+    payload = extract_last_json_object(completion_text)
+    if payload is None:
+        return ParseFailure("no JSON block found")
+    return payload
+
+
 def parse_design(completion_text: str) -> TrussDesign | ParseFailure:
     """Extract and validate the design JSON from raw completion text.
 
     Assumptions:
         1. Rung 0 exists so malformed output is scored, not crashed on:
            every failure mode returns a ParseFailure, never raises.
+        2. Section names are validated against the catalog here so every
+           TrussDesign leaving this stage references real sections;
+           truss_type and numeric ranges are DRC's job (rung 1), giving
+           an unsupported typology a richer signal than rung 0.
 
     Args:
         completion_text: the policy's full completion, optional reasoning
@@ -90,6 +169,25 @@ def parse_design(completion_text: str) -> TrussDesign | ParseFailure:
         TrussDesign: the validated design, or ParseFailure with the reason
             when extraction or validation fails
     """
-    raise NotImplementedError(
-        "Unit 6 (outline.md): JSON-block extraction + schema validation"
+    payload = decode_design_payload(completion_text)
+    if isinstance(payload, ParseFailure):
+        return payload
+    if not isinstance(payload, dict):
+        return ParseFailure(
+            f"design JSON must be an object, got {type(payload).__name__}"
+        )
+    try:
+        design = TrussDesign.model_validate(payload)
+    except ValidationError as error:
+        details = "; ".join(
+            f"{'.'.join(str(part) for part in item['loc']) or 'design'}: {item['msg']}"
+            for item in error.errors()
+        )
+        return ParseFailure(f"schema validation failed: {details}")
+    unknown = sorted(
+        {name for name in design.sections_by_group().values() if not has_section(name)}
     )
+    if unknown:
+        names = ", ".join(repr(name) for name in unknown)
+        return ParseFailure(f"unknown section designation(s): {names}")
+    return design
