@@ -7,10 +7,11 @@ worth. Cost credit is gated by feasibility: cheap-and-broken can never beat
 expensive-and-safe.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
 from trussRL.capacity import MemberCapacity
+from trussRL.catalog import get_section
 from trussRL.drc import DRCResult
 from trussRL.expander import TrussGeometry
 from trussRL.instance import TrussInstance
@@ -20,7 +21,14 @@ RUNG0_SCORE = 0.0
 RUNG1_SCORE = 0.10
 RUNG2_SCORE = 0.15
 RUNG3_FLOOR = 0.20
+RUNG3_RANGE = 0.80
 COST_PER_NODE_USD = 150.0
+INCHES_PER_FOOT = 12.0
+OVERAGE_SPAN = 0.5
+W_STRENGTH = 0.25
+W_BUCKLING = 0.25
+W_DEFL = 0.20
+W_COST = 0.30
 
 
 @dataclass(frozen=True)
@@ -91,11 +99,121 @@ def rung2(reason: str) -> RewardBreakdown:
     return RewardBreakdown(score=RUNG2_SCORE, rung=2, reason=f"solver: {reason}")
 
 
+def sat(u: float) -> float:
+    """Clamp a utilization into linear graded credit.
+
+    Full credit at or below 1.0, then a linear ramp to zero credit at
+    1.0 + OVERAGE_SPAN (50% overage), so 5% overstressed outranks 40%
+    overstressed instead of both falling off a cliff.
+
+    Args:
+        u: utilization, demand over capacity, nonnegative
+
+    Returns:
+        float: credit in [0.0, 1.0]
+    """
+    if u <= 1.0:
+        return 1.0
+    return max(0.0, 1.0 - (u - 1.0) / OVERAGE_SPAN)
+
+
+def envelope_utilizations(
+    solve_outcome: SolveOutcome, capacities: Sequence[MemberCapacity]
+) -> tuple[float, float]:
+    """Worst tension and worst compression utilization over members and cases.
+
+    Assumptions:
+        1. Envelope semantics: the max runs over every (member, case) pair,
+           so the same member gets a tension check and a compression check,
+           possibly governed by different cases.
+        2. U_strength is the tension side only; compression capacity per
+           Chapter E3 already caps at yield, so the compression side of
+           strength is covered by the buckling term.
+
+    Args:
+        solve_outcome: successful solver output with per-case member axial
+            forces, positive in tension
+        capacities: per-member tension and compression capacities
+
+    Returns:
+        tuple: (u_strength, u_buckling), each the worst utilization over
+            all (member, case) pairs, or 0.0 when no demand of that sign
+            exists anywhere
+    """
+    capacity_by_id = {capacity.member_id: capacity for capacity in capacities}
+    u_strength = 0.0
+    u_buckling = 0.0
+    for solution in solve_outcome.solutions:
+        for member_id, axial_kip in solution.member_axials_kip.items():
+            capacity = capacity_by_id[member_id]
+            if axial_kip > 0.0:
+                u_strength = max(u_strength, axial_kip / capacity.tension_kip)
+            elif axial_kip < 0.0:
+                u_buckling = max(u_buckling, -axial_kip / capacity.compression_kip)
+    return u_strength, u_buckling
+
+
+def deflection_utilization(
+    instance: TrussInstance, solve_outcome: SolveOutcome
+) -> float:
+    """Worst deflection utilization over the instance's gravity cases.
+
+    Assumptions:
+        1. Load cases pair with solve_outcome.solutions by index, in the
+           order the solver ran them.
+        2. Gravity cases are those with a downward line load
+           (w_kip_per_ft < 0.0); with no gravity case, no deflection
+           constraint applies and the utilization is 0.0.
+
+    Args:
+        instance: the problem instance, providing span_ft and defl_denom
+        solve_outcome: successful solver output with per-case nodal
+            displacements in inches
+
+    Returns:
+        float: max over gravity cases of max |dy| over nodes divided by
+            the span / defl_denom limit, or 0.0 with no gravity case
+    """
+    limit_in = instance.span_ft * INCHES_PER_FOOT / instance.defl_denom
+    u_defl = 0.0
+    for load_case, solution in zip(
+        instance.load_cases, solve_outcome.solutions, strict=True
+    ):
+        if load_case.w_kip_per_ft >= 0.0:
+            continue
+        delta_max_in = max(abs(dy) for _, dy in solution.node_displacements_in.values())
+        u_defl = max(u_defl, delta_max_in / limit_in)
+    return u_defl
+
+
+def design_cost_usd(
+    geometry: TrussGeometry, sections_by_group: Mapping[str, str]
+) -> float:
+    """Total design cost: member material plus per-node connection cost.
+
+    Args:
+        geometry: expanded truss geometry, providing member lengths,
+            member groups, and the node count
+        sections_by_group: member group name mapped to its section
+            designation
+
+    Returns:
+        float: sum of length x cost_per_ft over members plus
+            COST_PER_NODE_USD x n_nodes, in dollars
+    """
+    member_cost = sum(
+        member.length_ft * get_section(sections_by_group[member.group]).cost_per_ft_usd
+        for member in geometry.members
+    )
+    return member_cost + COST_PER_NODE_USD * geometry.n_nodes
+
+
 def grade(
     instance: TrussInstance,
     geometry: TrussGeometry,
     solve_outcome: SolveOutcome,
     capacities: Sequence[MemberCapacity],
+    sections_by_group: Mapping[str, str],
 ) -> RewardBreakdown:
     """Grade a solved design: rung 3, 0.20 plus the graded terms.
 
@@ -105,6 +223,11 @@ def grade(
            two checks, possibly governed by different cases.
         2. Cost credit is gated by feasibility so "cheap and broken" can
            never tie with "expensive and safe".
+        3. When instance.cost_ref_usd is None the cost term contributes
+           0.0 rather than raising: Unit 9's calibration sweep scores
+           designs before cost_ref exists and derives it from the
+           cost_total_usd recorded in these breakdowns, so raising would
+           deadlock calibration.
 
     Args:
         instance: the problem instance, providing defl_denom and
@@ -115,12 +238,35 @@ def grade(
             axials and nodal displacements
         capacities: per-member tension and compression capacities, ordered
             by member id
+        sections_by_group: member group name mapped to its section
+            designation, used for member cost
 
     Returns:
         RewardBreakdown: score 0.20 + 0.80 * (weighted sat() terms and
             gated cost term), capped at 1.0, with all rung-3 detail fields
             populated
     """
-    raise NotImplementedError(
-        "Unit 5 (outline.md): envelope, sat() clamps, deflection, cost"
+    u_strength, u_buckling = envelope_utilizations(solve_outcome, capacities)
+    u_defl = deflection_utilization(instance, solve_outcome)
+    feasible = min(sat(u_strength), sat(u_buckling), sat(u_defl))
+    cost_total = design_cost_usd(geometry, sections_by_group)
+    if instance.cost_ref_usd is None:
+        cost_term = 0.0
+    else:
+        cost_term = max(0.0, 1.0 - cost_total / (2.0 * instance.cost_ref_usd))
+    graded = (
+        W_STRENGTH * sat(u_strength)
+        + W_BUCKLING * sat(u_buckling)
+        + W_DEFL * sat(u_defl)
+        + W_COST * cost_term * feasible
+    )
+    return RewardBreakdown(
+        score=min(1.0, RUNG3_FLOOR + RUNG3_RANGE * graded),
+        rung=3,
+        reason="solved",
+        u_strength=u_strength,
+        u_buckling=u_buckling,
+        u_defl=u_defl,
+        cost_total_usd=cost_total,
+        feasible=feasible,
     )

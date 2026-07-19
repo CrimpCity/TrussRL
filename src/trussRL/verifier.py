@@ -202,7 +202,7 @@ def run_pipeline(instance: TrussInstance, design: TrussDesign) -> PipelineTrace:
         stages.append(StageStatus("reward", "skipped", "needs solve and capacity"))
     else:
         try:
-            breakdown = grade(instance, geometry, solve_outcome, capacities)
+            breakdown = grade(instance, geometry, solve_outcome, capacities, sections)
             stages.append(
                 StageStatus(
                     "reward",
