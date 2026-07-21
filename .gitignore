@@ -1,5 +1,9 @@
 docs/*
 
+# Calibration gate reports accumulate one file per run; the frozen
+# constants (artifacts/cost_ref.json, sweep_best.json) stay tracked.
+artifacts/gate_reports/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
