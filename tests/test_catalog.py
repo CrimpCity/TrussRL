@@ -116,7 +116,7 @@ def test_sections_expose_full_properties() -> None:
 def recompute_catalog_from_csv() -> dict[str, dict[str, float]]:
     """Independently re-derive the catalog dict from the frozen CSV.
 
-    Mirrors the scripts/make_catalog.py derivation with a separate
+    Mirrors the ``scripts.data.generate_catalog`` derivation with a separate
     implementation: imperial (first-occurrence) columns only, identity and
     flag columns dropped, float-parsable fields kept, and the derived
     cost_per_ft_usd appended.

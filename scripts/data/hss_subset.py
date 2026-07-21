@@ -5,7 +5,7 @@ stiffness range, endpoints included — a catalog broad enough that section
 choice is a real decision, small enough to fit in a prompt.
 
 Usage:
-    python -m scripts.hss_subset
+    uv run python -m scripts.data.hss_subset
 """
 
 from pathlib import Path
@@ -13,9 +13,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from scripts.hss_filter import detect_line_terminator, load_hss, read_header_line
+from scripts.data.hss_filter import (
+    detect_line_terminator,
+    load_hss,
+    read_header_line,
+)
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 INPUT_PATHS = {
     "rectangular": REPO_ROOT / "data" / "HSS_rectangular.csv",
     "square": REPO_ROOT / "data" / "HSS_square.csv",
@@ -84,7 +88,7 @@ def main() -> None:
 
     Assumptions:
         1. The per-shape catalogs were split from the same ``HSS.csv`` by
-           ``scripts.hss_filter``, so their header lines are identical; the
+           ``scripts.data.hss_filter``, so their header lines are identical; the
            script fails fast if the frozen catalogs ever diverge.
 
     Args: None
