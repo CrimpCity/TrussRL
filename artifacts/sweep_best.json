@@ -1,0 +1,1253 @@
+{
+  "config": {
+    "designs_per_instance": 5000,
+    "generator": {
+      "defl_denoms": [
+        240,
+        360,
+        500
+      ],
+      "depth_limit_variants": [
+        "none",
+        "generous"
+      ],
+      "load_level": "bottom",
+      "span_max_ft": 160.0,
+      "span_min_ft": 120.0,
+      "span_step_ft": 1.0,
+      "w_max_kip_per_ft": 5.0,
+      "w_min_kip_per_ft": 3.0,
+      "w_step_kip_per_ft": 0.1
+    },
+    "generator_version": "v2",
+    "n_instances": 32,
+    "seed": 0,
+    "sweep_best_samples": 100000
+  },
+  "instances": [
+    {
+      "best": {
+        "cost_total_usd": 41018.83647962565,
+        "design": {
+          "bottom_chord": "HSS10X5X3/8",
+          "depth_ft": 26.46298968143203,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 6,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS16X4X5/16"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9367444446756237,
+        "u_buckling": 0.9753595976507973,
+        "u_defl": 0.734851427956053,
+        "u_strength": 0.889576739700256
+      },
+      "cost_ref_usd": 77815.46383260055,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 136.0
+      },
+      "instance_index": 0,
+      "n_samples": 100000,
+      "sweep_best_seed": 746805015404516437
+    },
+    {
+      "best": {
+        "cost_total_usd": 41741.65830902719,
+        "design": {
+          "bottom_chord": "HSS8X8X3/8",
+          "depth_ft": 33.95939235127205,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 4,
+          "top_chord": "HSS16X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS2-1/4X2-1/4X3/16"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.938992905482817,
+        "u_buckling": 0.9853266532764166,
+        "u_defl": 0.6888058089779151,
+        "u_strength": 0.5878339369388096
+      },
+      "cost_ref_usd": 82105.18853135101,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.2
+          }
+        ],
+        "span_ft": 159.0
+      },
+      "instance_index": 1,
+      "n_samples": 100000,
+      "sweep_best_seed": 8963783824838420066
+    },
+    {
+      "best": {
+        "cost_total_usd": 38305.53011750566,
+        "design": {
+          "bottom_chord": "HSS7X7X5/16",
+          "depth_ft": 30.303287338846058,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 4,
+          "top_chord": "HSS12X12X1/2",
+          "truss_type": "warren",
+          "verticals": "HSS20X16X5/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9303572227183043,
+        "u_buckling": 0.8930601767331815,
+        "u_defl": 0.35092235428928936,
+        "u_strength": 0.8070013691481701
+      },
+      "cost_ref_usd": 66003.4506594675,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.6
+          }
+        ],
+        "span_ft": 142.0
+      },
+      "instance_index": 2,
+      "n_samples": 100000,
+      "sweep_best_seed": 15308084094301570617
+    },
+    {
+      "best": {
+        "cost_total_usd": 38556.62878561952,
+        "design": {
+          "bottom_chord": "HSS16X12X5/16",
+          "depth_ft": 15.99539480755378,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 5,
+          "top_chord": "HSS12X12X1/2",
+          "truss_type": "warren",
+          "verticals": "HSS10X5X3/8"
+        },
+        "feasible": 0.9898235696894946,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9314627928462123,
+        "u_buckling": 1.0050882151552527,
+        "u_defl": 0.6507017616481687,
+        "u_strength": 0.8905160275783542
+      },
+      "cost_ref_usd": 71491.4357669365,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 21.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -5.0
+          }
+        ],
+        "span_ft": 127.0
+      },
+      "instance_index": 3,
+      "n_samples": 100000,
+      "sweep_best_seed": 6604845167042249220
+    },
+    {
+      "best": {
+        "cost_total_usd": 47945.921209272994,
+        "design": {
+          "bottom_chord": "HSS12X6X5/16",
+          "depth_ft": 31.97216865980338,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS12X12X1/2",
+          "truss_type": "warren",
+          "verticals": "HSS4X4X1/4"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9354655113470383,
+        "u_buckling": 0.8230386892133079,
+        "u_defl": 0.7157790836538525,
+        "u_strength": 0.7617181650944751
+      },
+      "cost_ref_usd": 89154.04251597343,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 145.0
+      },
+      "instance_index": 4,
+      "n_samples": 100000,
+      "sweep_best_seed": 4029557120079369747
+    },
+    {
+      "best": {
+        "cost_total_usd": 37185.05532894134,
+        "design": {
+          "bottom_chord": "HSS14X12X5/16",
+          "depth_ft": 20.87333865538934,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 4,
+          "top_chord": "HSS12X12X1/2",
+          "truss_type": "warren",
+          "verticals": "HSS12X12X1/4"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9388256728869739,
+        "u_buckling": 0.9780065013301744,
+        "u_defl": 0.44917492199411574,
+        "u_strength": 0.6531773092331271
+      },
+      "cost_ref_usd": 72942.47194952484,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.8
+          }
+        ],
+        "span_ft": 128.0
+      },
+      "instance_index": 5,
+      "n_samples": 100000,
+      "sweep_best_seed": 2577854692418029171
+    },
+    {
+      "best": {
+        "cost_total_usd": 40810.43118241999,
+        "design": {
+          "bottom_chord": "HSS16X4X5/16",
+          "depth_ft": 19.6717868036135,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 7,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS6X4X3/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9301172470462209,
+        "u_buckling": 0.8461664614337484,
+        "u_defl": 0.5512551894999888,
+        "u_strength": 0.8626353438495264
+      },
+      "cost_ref_usd": 70078.1170588611,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 23.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.4
+          }
+        ],
+        "span_ft": 139.0
+      },
+      "instance_index": 6,
+      "n_samples": 100000,
+      "sweep_best_seed": 14746374668458749500
+    },
+    {
+      "best": {
+        "cost_total_usd": 46414.86774933633,
+        "design": {
+          "bottom_chord": "HSS12X12X1/4",
+          "depth_ft": 25.028861130049705,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS20X12X3/8",
+          "truss_type": "warren",
+          "verticals": "HSS6X3X1/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9330778113341234,
+        "u_buckling": 0.9817714652266787,
+        "u_defl": 0.68530967599231,
+        "u_strength": 0.8841366749953887
+      },
+      "cost_ref_usd": 83227.76407879754,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": 25.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.1
+          }
+        ],
+        "span_ft": 151.0
+      },
+      "instance_index": 7,
+      "n_samples": 100000,
+      "sweep_best_seed": 9824065007139496298
+    },
+    {
+      "best": {
+        "cost_total_usd": 47624.369470500314,
+        "design": {
+          "bottom_chord": "HSS12X12X1/4",
+          "depth_ft": 23.638560121022703,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 6,
+          "top_chord": "HSS22X18X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS6X4X3/8"
+        },
+        "feasible": 0.9865718330834352,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9288665643404603,
+        "u_buckling": 0.8999221510722589,
+        "u_defl": 1.0067140834582824,
+        "u_strength": 0.8905643747075067
+      },
+      "cost_ref_usd": 85735.97059634182,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": 24.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.8
+          }
+        ],
+        "span_ft": 147.0
+      },
+      "instance_index": 8,
+      "n_samples": 100000,
+      "sweep_best_seed": 11103133428834002334
+    },
+    {
+      "best": {
+        "cost_total_usd": 47597.3992969556,
+        "design": {
+          "bottom_chord": "HSS9X9X3/8",
+          "depth_ft": 23.109731626560553,
+          "diagonals": "HSS16X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS12X12X1/2",
+          "truss_type": "warren",
+          "verticals": "HSS20X4X1/2"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.931415140162319,
+        "u_buckling": 0.9309779527527197,
+        "u_defl": 0.4070926802891838,
+        "u_strength": 0.7239675347957302
+      },
+      "cost_ref_usd": 83279.13666591217,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.3
+          }
+        ],
+        "span_ft": 152.0
+      },
+      "instance_index": 9,
+      "n_samples": 100000,
+      "sweep_best_seed": 1821862095355237593
+    },
+    {
+      "best": {
+        "cost_total_usd": 53146.56487814384,
+        "design": {
+          "bottom_chord": "HSS12X6X5/16",
+          "depth_ft": 28.06173293698074,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 8,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS22X22X1"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9199691037789801,
+        "u_buckling": 0.9442620014576762,
+        "u_defl": 0.7891279755722201,
+        "u_strength": 0.896610694230797
+      },
+      "cost_ref_usd": 79689.07117776612,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.6
+          }
+        ],
+        "span_ft": 156.0
+      },
+      "instance_index": 10,
+      "n_samples": 100000,
+      "sweep_best_seed": 15688473010146788380
+    },
+    {
+      "best": {
+        "cost_total_usd": 35447.4469571834,
+        "design": {
+          "bottom_chord": "HSS7X7X5/16",
+          "depth_ft": 22.462400272280764,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 4,
+          "top_chord": "HSS20X12X3/8",
+          "truss_type": "warren",
+          "verticals": "HSS16X16X1"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.94469776901974,
+        "u_buckling": 0.7932413101896092,
+        "u_defl": 0.7178435806321215,
+        "u_strength": 0.9987235638922248
+      },
+      "cost_ref_usd": 76917.21580600174,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.3
+          }
+        ],
+        "span_ft": 142.0
+      },
+      "instance_index": 11,
+      "n_samples": 100000,
+      "sweep_best_seed": 10326739782786242647
+    },
+    {
+      "best": {
+        "cost_total_usd": 29309.56600972803,
+        "design": {
+          "bottom_chord": "HSS10X5X3/8",
+          "depth_ft": 18.28774018647466,
+          "diagonals": "HSS9X9X3/8",
+          "n_bays": 4,
+          "top_chord": "HSS16X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS16X4X5/16"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9406294246632441,
+        "u_buckling": 0.8413378832091946,
+        "u_defl": 0.9145143736942456,
+        "u_strength": 0.7451117054878585
+      },
+      "cost_ref_usd": 59240.59016133397,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.6
+          }
+        ],
+        "span_ft": 120.0
+      },
+      "instance_index": 12,
+      "n_samples": 100000,
+      "sweep_best_seed": 5832799601125876386
+    },
+    {
+      "best": {
+        "cost_total_usd": 67409.2054247366,
+        "design": {
+          "bottom_chord": "HSS22X18X5/16",
+          "depth_ft": 23.399751401141295,
+          "diagonals": "HSS16X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS14X14X3/4",
+          "truss_type": "warren",
+          "verticals": "HSS1-1/2X1-1/2X1/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9065758077395314,
+        "u_buckling": 0.84196068501303,
+        "u_defl": 0.7700265991784022,
+        "u_strength": 0.529730117988329
+      },
+      "cost_ref_usd": 86584.68920358234,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": 25.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.7
+          }
+        ],
+        "span_ft": 152.0
+      },
+      "instance_index": 13,
+      "n_samples": 100000,
+      "sweep_best_seed": 3771948619523626940
+    },
+    {
+      "best": {
+        "cost_total_usd": 40483.959737777004,
+        "design": {
+          "bottom_chord": "HSS12X12X1/4",
+          "depth_ft": 24.90170199287125,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 4,
+          "top_chord": "HSS20X12X3/8",
+          "truss_type": "warren",
+          "verticals": "HSS9X9X3/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.939139179082852,
+        "u_buckling": 0.97902696468902,
+        "u_defl": 0.4502951623018228,
+        "u_strength": 0.8002639393126952
+      },
+      "cost_ref_usd": 79822.7019505162,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 25.0,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.8
+          }
+        ],
+        "span_ft": 149.0
+      },
+      "instance_index": 14,
+      "n_samples": 100000,
+      "sweep_best_seed": 8166251064029171718
+    },
+    {
+      "best": {
+        "cost_total_usd": 53914.13939411349,
+        "design": {
+          "bottom_chord": "HSS14X12X5/16",
+          "depth_ft": 34.63563893636574,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS12X12X1/2",
+          "truss_type": "warren",
+          "verticals": "HSS3-1/2X2-1/2X5/16"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9273890327869676,
+        "u_buckling": 0.8973797246551037,
+        "u_defl": 0.2862069046357405,
+        "u_strength": 0.4934152224504133
+      },
+      "cost_ref_usd": 89100.82010493333,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 147.0
+      },
+      "instance_index": 15,
+      "n_samples": 100000,
+      "sweep_best_seed": 1148855520316071875
+    },
+    {
+      "best": {
+        "cost_total_usd": 48355.80102031429,
+        "design": {
+          "bottom_chord": "HSS16X4X5/16",
+          "depth_ft": 21.68544553531479,
+          "diagonals": "HSS9X9X3/8",
+          "n_bays": 6,
+          "top_chord": "HSS22X18X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS4X4X1/4"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9312873412353355,
+        "u_buckling": 0.9365664525140629,
+        "u_defl": 0.8143483879784473,
+        "u_strength": 0.9817342008733866
+      },
+      "cost_ref_usd": 84448.72061073188,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.9
+          }
+        ],
+        "span_ft": 148.0
+      },
+      "instance_index": 16,
+      "n_samples": 100000,
+      "sweep_best_seed": 16897115791155498662
+    },
+    {
+      "best": {
+        "cost_total_usd": 37279.2178860141,
+        "design": {
+          "bottom_chord": "HSS9X9X3/8",
+          "depth_ft": 20.38653418618521,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 4,
+          "top_chord": "HSS20X12X3/8",
+          "truss_type": "warren",
+          "verticals": "HSS5-1/2X5-1/2X3/16"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9365567222058391,
+        "u_buckling": 0.8360793750841887,
+        "u_defl": 0.45480609579434866,
+        "u_strength": 0.7286193853599202
+      },
+      "cost_ref_usd": 70511.90136858611,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.6
+          }
+        ],
+        "span_ft": 138.0
+      },
+      "instance_index": 17,
+      "n_samples": 100000,
+      "sweep_best_seed": 15496947691660677356
+    },
+    {
+      "best": {
+        "cost_total_usd": 49377.95729419276,
+        "design": {
+          "bottom_chord": "HSS9X9X3/8",
+          "depth_ft": 22.59952614954092,
+          "diagonals": "HSS9X9X3/8",
+          "n_bays": 6,
+          "top_chord": "HSS22X18X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS4X4X1/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9375566763302292,
+        "u_buckling": 0.951855183657849,
+        "u_defl": 0.4914036131310534,
+        "u_strength": 0.8754362605467528
+      },
+      "cost_ref_usd": 94891.72784330242,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 24.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.9
+          }
+        ],
+        "span_ft": 147.0
+      },
+      "instance_index": 18,
+      "n_samples": 100000,
+      "sweep_best_seed": 14481575087845214796
+    },
+    {
+      "best": {
+        "cost_total_usd": 39751.194679888475,
+        "design": {
+          "bottom_chord": "HSS12X12X1/4",
+          "depth_ft": 33.146505750663714,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 4,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS7X7X5/16"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9330609245722103,
+        "u_buckling": 0.9020063786080842,
+        "u_defl": 0.4605966056821365,
+        "u_strength": 0.5229336490870994
+      },
+      "cost_ref_usd": 71260.96874063341,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.2
+          }
+        ],
+        "span_ft": 151.0
+      },
+      "instance_index": 19,
+      "n_samples": 100000,
+      "sweep_best_seed": 11287508979737617733
+    },
+    {
+      "best": {
+        "cost_total_usd": 39606.60152310488,
+        "design": {
+          "bottom_chord": "HSS16X12X5/16",
+          "depth_ft": 18.81031131516632,
+          "diagonals": "HSS9X9X3/8",
+          "n_bays": 4,
+          "top_chord": "HSS20X12X3/8",
+          "truss_type": "warren",
+          "verticals": "HSS6X4X3/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9256519717853977,
+        "u_buckling": 0.9976224666531898,
+        "u_defl": 0.7425794365198213,
+        "u_strength": 0.6747683606198626
+      },
+      "cost_ref_usd": 63926.27076879384,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 132.0
+      },
+      "instance_index": 20,
+      "n_samples": 100000,
+      "sweep_best_seed": 6145258598325499690
+    },
+    {
+      "best": {
+        "cost_total_usd": 42180.200762625784,
+        "design": {
+          "bottom_chord": "HSS14X12X5/16",
+          "depth_ft": 20.05445322074431,
+          "diagonals": "HSS16X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS20X12X3/8",
+          "truss_type": "warren",
+          "verticals": "HSS22X22X1/2"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9243183340948682,
+        "u_buckling": 0.8613780425402376,
+        "u_defl": 0.8462449483308452,
+        "u_strength": 0.6678263252215217
+      },
+      "cost_ref_usd": 66880.4528940989,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": 21.0,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -5.0
+          }
+        ],
+        "span_ft": 124.0
+      },
+      "instance_index": 21,
+      "n_samples": 100000,
+      "sweep_best_seed": 12979913897493436362
+    },
+    {
+      "best": {
+        "cost_total_usd": 42304.53362752871,
+        "design": {
+          "bottom_chord": "HSS12X12X1/4",
+          "depth_ft": 21.428170521165615,
+          "diagonals": "HSS9X9X3/8",
+          "n_bays": 7,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS4X4X1/2"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9246813383426591,
+        "u_buckling": 0.9349272865659344,
+        "u_defl": 0.8680043789380739,
+        "u_strength": 0.9940285176828265
+      },
+      "cost_ref_usd": 67400.87945798834,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": 22.0,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.8
+          }
+        ],
+        "span_ft": 130.0
+      },
+      "instance_index": 22,
+      "n_samples": 100000,
+      "sweep_best_seed": 16916014221247497676
+    },
+    {
+      "best": {
+        "cost_total_usd": 41393.116795616465,
+        "design": {
+          "bottom_chord": "HSS7X7X5/16",
+          "depth_ft": 33.46724928950899,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS2-1/4X2-1/4X3/16"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9425209865584128,
+        "u_buckling": 0.8179223235615432,
+        "u_defl": 0.7021811992146259,
+        "u_strength": 0.8208496715659429
+      },
+      "cost_ref_usd": 86417.17590580856,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 135.0
+      },
+      "instance_index": 23,
+      "n_samples": 100000,
+      "sweep_best_seed": 14819100536302071543
+    },
+    {
+      "best": {
+        "cost_total_usd": 53897.048610984726,
+        "design": {
+          "bottom_chord": "HSS8X8X3/8",
+          "depth_ft": 36.498575211855226,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS12X12X1/2",
+          "truss_type": "warren",
+          "verticals": "HSS16X12X5/16"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9390624955611224,
+        "u_buckling": 0.8886500116172575,
+        "u_defl": 0.6208570705185398,
+        "u_strength": 0.6445683189681582
+      },
+      "cost_ref_usd": 106135.71876422096,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.7
+          }
+        ],
+        "span_ft": 160.0
+      },
+      "instance_index": 24,
+      "n_samples": 100000,
+      "sweep_best_seed": 10016396730278161277
+    },
+    {
+      "best": {
+        "cost_total_usd": 41281.1947793384,
+        "design": {
+          "bottom_chord": "HSS6X6X3/8",
+          "depth_ft": 29.25609173610774,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS12X12X7/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9339003767467449,
+        "u_buckling": 0.9996975050264818,
+        "u_defl": 0.8244795214648751,
+        "u_strength": 0.89604557392586
+      },
+      "cost_ref_usd": 74943.59467890995,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.4
+          }
+        ],
+        "span_ft": 151.0
+      },
+      "instance_index": 25,
+      "n_samples": 100000,
+      "sweep_best_seed": 18321703892302698705
+    },
+    {
+      "best": {
+        "cost_total_usd": 40889.75455177321,
+        "design": {
+          "bottom_chord": "HSS8X8X3/8",
+          "depth_ft": 20.657291568539442,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 5,
+          "top_chord": "HSS20X12X3/8",
+          "truss_type": "warren",
+          "verticals": "HSS6X4X3/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9327888659957535,
+        "u_buckling": 0.8318775130783637,
+        "u_defl": 0.5255936053620428,
+        "u_strength": 0.9623956677492458
+      },
+      "cost_ref_usd": 73005.32298566421,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.5
+          }
+        ],
+        "span_ft": 145.0
+      },
+      "instance_index": 26,
+      "n_samples": 100000,
+      "sweep_best_seed": 18409327205571651030
+    },
+    {
+      "best": {
+        "cost_total_usd": 40640.82118134982,
+        "design": {
+          "bottom_chord": "HSS12X6X5/16",
+          "depth_ft": 23.872755376438462,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 5,
+          "top_chord": "HSS12X12X1/2",
+          "truss_type": "warren",
+          "verticals": "HSS8X8X3/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9374133883275297,
+        "u_buckling": 0.9558871155409031,
+        "u_defl": 0.7291552987361425,
+        "u_strength": 0.977681990183643
+      },
+      "cost_ref_usd": 77922.39284791242,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.3
+          }
+        ],
+        "span_ft": 139.0
+      },
+      "instance_index": 27,
+      "n_samples": 100000,
+      "sweep_best_seed": 5560711798030284561
+    },
+    {
+      "best": {
+        "cost_total_usd": 60024.837326118184,
+        "design": {
+          "bottom_chord": "HSS12X12X1/2",
+          "depth_ft": 15.342222091997826,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS16X16X5/8",
+          "truss_type": "warren",
+          "verticals": "HSS9X9X3/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.928134955253394,
+        "u_buckling": 0.8815717050277337,
+        "u_defl": 0.7088541714097402,
+        "u_strength": 0.8120391242433822
+      },
+      "cost_ref_usd": 100229.26312133633,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 25.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.3
+          }
+        ],
+        "span_ft": 153.0
+      },
+      "instance_index": 28,
+      "n_samples": 100000,
+      "sweep_best_seed": 2302351276851148157
+    },
+    {
+      "best": {
+        "cost_total_usd": 45756.78115220343,
+        "design": {
+          "bottom_chord": "HSS8X8X3/8",
+          "depth_ft": 22.62707005934744,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 6,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS1-1/2X1-1/2X1/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9299211719134584,
+        "u_buckling": 0.9756567415628965,
+        "u_defl": 0.5283937004928866,
+        "u_strength": 0.9650692673160902
+      },
+      "cost_ref_usd": 78351.9628993183,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 23.0,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.4
+          }
+        ],
+        "span_ft": 137.0
+      },
+      "instance_index": 29,
+      "n_samples": 100000,
+      "sweep_best_seed": 17012504804578092654
+    },
+    {
+      "best": {
+        "cost_total_usd": 29821.476368064923,
+        "design": {
+          "bottom_chord": "HSS12X12X1/4",
+          "depth_ft": 20.35015074811207,
+          "diagonals": "HSS12X12X1/4",
+          "n_bays": 4,
+          "top_chord": "HSS14X12X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS10X5X3/8"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.944967066868506,
+        "u_buckling": 0.808645518666355,
+        "u_defl": 0.8063224493321436,
+        "u_strength": 0.6127967585180164
+      },
+      "cost_ref_usd": 65026.102745009826,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": 20.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.5
+          }
+        ],
+        "span_ft": 123.0
+      },
+      "instance_index": 30,
+      "n_samples": 100000,
+      "sweep_best_seed": 14746827282186116978
+    },
+    {
+      "best": {
+        "cost_total_usd": 57558.389032324194,
+        "design": {
+          "bottom_chord": "HSS14X12X5/16",
+          "depth_ft": 34.95649984290452,
+          "diagonals": "HSS14X12X5/16",
+          "n_bays": 4,
+          "top_chord": "HSS22X18X5/16",
+          "truss_type": "warren",
+          "verticals": "HSS12X2X1/4"
+        },
+        "feasible": 1.0,
+        "reason": "solved",
+        "rung": 3,
+        "score": 0.9293706382663316,
+        "u_buckling": 0.9387911983310079,
+        "u_defl": 0.44426772956208405,
+        "u_strength": 0.5226386596961164
+      },
+      "cost_ref_usd": 97792.28516780408,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.2
+          }
+        ],
+        "span_ft": 157.0
+      },
+      "instance_index": 31,
+      "n_samples": 100000,
+      "sweep_best_seed": 5306339935323558519
+    }
+  ],
+  "roster_seed": 7106521602475165645,
+  "stamp": {
+    "catalog_sha256": "1c4b9e7771e892719caa93130a8ed1ee60bef82c4f73d639543c064fbb27877a",
+    "created_utc": "2026-07-21T17:17:00.553900+00:00",
+    "git_dirty": true,
+    "git_sha": "36743b4de9b5a1d1010fdffb37ada1a23412516c",
+    "run_id": "20260721T171700Z_36743b4"
+  }
+}
