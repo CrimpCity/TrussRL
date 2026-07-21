@@ -337,5 +337,15 @@ def run(
     print_trace(parse_status, run_pipeline(instance, design))
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Run the pipeline command-line interface.
+
+    Args: None
+
+    Returns: None
+    """
     app()
+
+
+if __name__ == "__main__":
+    main()
