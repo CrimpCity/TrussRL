@@ -11,28 +11,64 @@ uv lock && uv sync && source .venv/bin/activate
 
 ```
 TrussRL/
-├── data/                   # frozen inputs: aisc_hss.csv section catalog (Module 1)
-├── artifacts/              # committed calibration outputs (cost_ref, sweep_best, gate reports)
-├── scripts/                # thin typer CLIs, one per experiment phase
+├── data/                       # frozen AISC HSS inputs and 40-section subset
+├── artifacts/                  # committed calibration outputs and gate reports
+├── scripts/                    # repository-oriented utilities (namespace package)
+│   ├── data/                   # catalog filtering, subsetting, and generation
+│   ├── validation/             # hand-checks for the OpenSees solver wall
+│   └── inspection/             # human-readable reports and geometry plots
 ├── src/trussRL/
-│   ├── catalog.py          # section records from data/aisc_hss.csv
-│   ├── schema.py           # TrussDesign model + JSON extraction (rung 0)
-│   ├── instance.py         # TrussInstance: everything the prompt shows + grading params
-│   ├── generator.py        # seeded procedural instance generator
-│   ├── prompts.py          # TrussInstance -> prompt text
-│   ├── expander.py         # design -> nodes/members/supports (geometry source of truth)
-│   ├── loads.py            # line load -> panel points + self-weight
-│   ├── drc.py              # design rule checks (rung 1)
-│   ├── solver.py           # OpenSees wall (rung 2)
-│   ├── capacity.py         # AISC tension/buckling capacities
-│   ├── reward.py           # utilization envelope, cost, reward ladder (rung 3)
-│   ├── verifier.py         # score(instance, completion) -> RewardBreakdown
-│   ├── baselines/          # heuristic engineer, random sampler, frontier APIs
-│   ├── calibration/        # sweep + sanity gates freezing cost_ref/sweep_best
-│   ├── evaluation/         # metrics + eval harness
-│   ├── training/           # RL stack, gated behind the [training] extra
+│   ├── cli/                    # supported command adapters; pipeline is published
+│   │   ├── pipeline.py         # inspect one design through every verifier stage
+│   │   ├── calibrate.py        # planned, intentionally unimplemented
+│   │   ├── baselines.py        # planned, intentionally unimplemented
+│   │   └── rollout_gate.py     # planned, intentionally unimplemented
+│   ├── catalog.py              # section records from the frozen catalog
+│   ├── schema.py               # TrussDesign model + JSON extraction (rung 0)
+│   ├── instance.py             # prompt-visible data and grading parameters
+│   ├── generator.py            # seeded procedural instance generator
+│   ├── prompts.py              # TrussInstance -> prompt text
+│   ├── expander.py             # design -> geometry (source of truth)
+│   ├── loads.py                # line load -> panel points + self-weight
+│   ├── drc.py                  # design rule checks (rung 1)
+│   ├── solver.py               # OpenSees wall (rung 2)
+│   ├── capacity.py             # AISC tension/buckling capacities
+│   ├── reward.py               # utilization, cost, and reward ladder (rung 3)
+│   ├── verifier.py             # score(instance, completion) -> RewardBreakdown
+│   ├── baselines/              # heuristic, random sampler, and frontier APIs
+│   ├── calibration/            # sweep + sanity gates
+│   ├── evaluation/             # metrics + evaluation harness
+│   ├── training/               # RL stack, gated behind the training extra
 │   └── utilities/
-└── tests/                  # incl. numpy reference solver + differential/determinism tests
+└── tests/                      # reference solver, differential, and unit tests
+```
+
+### Pipeline CLI
+
+Run the supported pipeline command through its installed console script:
+
+```bash
+uv run trussrl-pipeline
+```
+
+The same interface is available through Python module execution:
+
+```bash
+uv run python -m trussRL.cli.pipeline
+```
+
+Pass `--help` to either form for the complete Typer option list.
+
+### Repository utilities
+
+Run repository utilities as namespace-package modules from the repository root.
+Representative commands are:
+
+```bash
+uv run python -m scripts.data.generate_catalog
+uv run python -m scripts.validation.simple_truss_check
+uv run python -m scripts.inspection.check_wall_slenderness
+uv run python -m scripts.inspection.plot_geometry --save /tmp/truss.png
 ```
 
 Design principles:
