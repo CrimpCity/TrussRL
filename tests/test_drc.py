@@ -94,7 +94,9 @@ def test_unknown_section_designation_fails() -> None:
 
 
 def test_missing_required_group_fails() -> None:
-    sections = {k: v for k, v in BASELINE["sections_by_group"].items() if k != "top_chord"}
+    sections = {
+        k: v for k, v in BASELINE["sections_by_group"].items() if k != "top_chord"
+    }
     result = run_drc_with(sections_by_group=sections)
     assert len(result.failures) == 1
     (failure,) = result.failures

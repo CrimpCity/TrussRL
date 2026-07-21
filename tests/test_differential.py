@@ -17,9 +17,15 @@ prepend import mode puts ``tests/`` on sys.path, and the helper is not
 collected because it has no ``test_`` prefix.
 """
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 import pytest
-from reference_solver import ReferenceCaseSolution, solve_reference
+
+if TYPE_CHECKING:
+    from tests.reference_solver import ReferenceCaseSolution, solve_reference
+else:
+    from reference_solver import ReferenceCaseSolution, solve_reference
 
 from trussRL.catalog import list_sections
 from trussRL.expander import expand
@@ -121,7 +127,9 @@ def assert_solvers_agree(
 
     Returns: None
     """
-    label = f"span={span_ft} n_bays={n_bays} depth={depth_ft} sections={sections_by_group}"
+    label = (
+        f"span={span_ft} n_bays={n_bays} depth={depth_ft} sections={sections_by_group}"
+    )
     geometry = expand("warren", span_ft=span_ft, n_bays=n_bays, depth_ft=depth_ft)
     case_loads = build_load_cases(geometry, sections_by_group, cases)
     outcome = solve_cases(geometry, sections_by_group, case_loads)

@@ -133,7 +133,9 @@ def assemble_stiffness(
     stiffness = np.zeros((size, size), dtype=float)
     for member in geometry.members:
         length_in, cos, sin = member_geometry(member.node_i, member.node_j, coords)
-        axial_stiffness = E_KSI * member_area_in2(member.group, sections_by_group) / length_in
+        axial_stiffness = (
+            E_KSI * member_area_in2(member.group, sections_by_group) / length_in
+        )
         block = axial_stiffness * np.array(
             [
                 [cos * cos, cos * sin, -cos * cos, -cos * sin],
@@ -201,9 +203,7 @@ def solve_displacements(
     """
     free = [dof for dof in range(forces.size) if dof not in set(fixed)]
     displacements = np.zeros_like(forces)
-    displacements[free] = np.linalg.solve(
-        stiffness[np.ix_(free, free)], forces[free]
-    )
+    displacements[free] = np.linalg.solve(stiffness[np.ix_(free, free)], forces[free])
     return displacements
 
 
@@ -268,7 +268,9 @@ def solve_reference(
     fixed = constrained_dofs(geometry)
     solutions: list[ReferenceCaseSolution] = []
     for case in case_loads:
-        displacements = solve_displacements(stiffness, load_vector(geometry, case), fixed)
+        displacements = solve_displacements(
+            stiffness, load_vector(geometry, case), fixed
+        )
         node_displacements_in = {
             node.id: (
                 float(displacements[DOF_PER_NODE * node.id]),

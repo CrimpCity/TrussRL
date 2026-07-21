@@ -257,7 +257,9 @@ def test_timer_and_handler_restored_after_timeout(
 
     with monkeypatch.context() as patched:
         patched.setattr(ops, "analyze", hanging_analyze)
-        assert solve_cases(geometry, SECTIONS_BY_GROUP, loads, timeout_s=0.05).ok is False
+        assert (
+            solve_cases(geometry, SECTIONS_BY_GROUP, loads, timeout_s=0.05).ok is False
+        )
     assert signal.getsignal(signal.SIGALRM) == handler_before
     # A normal solve right after the timeout must succeed untouched.
     outcome = solve_cases(geometry, SECTIONS_BY_GROUP, loads)
