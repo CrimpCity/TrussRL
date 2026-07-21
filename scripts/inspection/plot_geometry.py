@@ -1,6 +1,9 @@
 """Draw what the expander built, so geometry bugs are seen rather than inferred.
 
 Dev-only spot check on samples — never part of scoring.
+
+Usage:
+    uv run python -m scripts.inspection.plot_geometry
 """
 
 from pathlib import Path

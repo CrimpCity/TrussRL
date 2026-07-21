@@ -18,6 +18,9 @@ dependencies = [
     "typer>=0.27.0",
 ]
 
+[project.scripts]
+trussrl-pipeline = "trussRL.cli.pipeline:main"
+
 # RL deps (torch/vllm/trainer) land here at Phase 3; only trussRL.training may import them.
 [project.optional-dependencies]
 training = []
@@ -26,6 +29,7 @@ training = []
 dev = [
     "isort>=8.0.1",
     "mypy>=2.3.0",
+    "pandas-stubs",
     "pre-commit>=4.6.0",
     "pytest-asyncio>=1.4.0",
     "pytest>=9.1.1",
@@ -71,7 +75,7 @@ exclude = ["^build/", "^dist/", "^tests/"]
 mypy_path = "src"
 explicit_package_bases = true
 namespace_packages = true
-packages = ["trussRL"]
+files = ["src/trussRL", "scripts"]
 strict = true
 
 [tool.pytest.ini_options]

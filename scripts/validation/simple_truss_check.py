@@ -7,13 +7,13 @@ joints) and independent of member areas. The script checks the solver's axial
 force in each member -- with the right tension/compression sign -- against those
 hand values, and cross-checks the P/2 support reactions.
 
-Companion to scripts/simple_beam_check.py, which checks the global beam results
-(reactions and midspan moment); this one focuses on the member axial forces that
-a truss solver actually produces.
+Companion to ``scripts.validation.simple_beam_check``, which checks the global
+beam results (reactions and midspan moment); this one focuses on the member
+axial forces that a truss solver actually produces.
 
 Run standalone:
 
-    uv run python scripts/simple_truss_check.py
+    uv run python -m scripts.validation.simple_truss_check
 """
 
 import math

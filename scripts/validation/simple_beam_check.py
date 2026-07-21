@@ -16,7 +16,7 @@ determinate truss, independent of member areas.
 
 Run standalone:
 
-    uv run python scripts/simple_beam_check.py
+    uv run python -m scripts.validation.simple_beam_check
 """
 
 import math

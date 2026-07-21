@@ -8,7 +8,7 @@ against the AISC Table B4.1a Case 6 limit. It is informational and saves
 nothing.
 
 Usage:
-    uv run python -m scripts.check_wall_slenderness
+    uv run python -m scripts.inspection.check_wall_slenderness
 """
 
 import math
