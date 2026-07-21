@@ -1,0 +1,709 @@
+{
+  "config": {
+    "designs_per_instance": 5000,
+    "generator": {
+      "defl_denoms": [
+        240,
+        360,
+        500
+      ],
+      "depth_limit_variants": [
+        "none",
+        "generous"
+      ],
+      "load_level": "bottom",
+      "span_max_ft": 160.0,
+      "span_min_ft": 120.0,
+      "span_step_ft": 1.0,
+      "w_max_kip_per_ft": 5.0,
+      "w_min_kip_per_ft": 3.0,
+      "w_step_kip_per_ft": 0.1
+    },
+    "generator_version": "v2",
+    "n_instances": 32,
+    "seed": 0,
+    "sweep_best_samples": 100000
+  },
+  "instances": [
+    {
+      "cost_ref_usd": 77815.46383260055,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 136.0
+      },
+      "instance_index": 0,
+      "n_rung3": 2717,
+      "n_samples": 5000,
+      "n_strictly_feasible": 161,
+      "sweep_seed": 16422101724900707500
+    },
+    {
+      "cost_ref_usd": 82105.18853135101,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.2
+          }
+        ],
+        "span_ft": 159.0
+      },
+      "instance_index": 1,
+      "n_rung3": 2336,
+      "n_samples": 5000,
+      "n_strictly_feasible": 146,
+      "sweep_seed": 17809683713383489082
+    },
+    {
+      "cost_ref_usd": 66003.4506594675,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.6
+          }
+        ],
+        "span_ft": 142.0
+      },
+      "instance_index": 2,
+      "n_rung3": 2622,
+      "n_samples": 5000,
+      "n_strictly_feasible": 231,
+      "sweep_seed": 16938433693753131896
+    },
+    {
+      "cost_ref_usd": 71491.4357669365,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 21.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -5.0
+          }
+        ],
+        "span_ft": 127.0
+      },
+      "instance_index": 3,
+      "n_rung3": 3584,
+      "n_samples": 5000,
+      "n_strictly_feasible": 149,
+      "sweep_seed": 17852758786694309641
+    },
+    {
+      "cost_ref_usd": 89154.04251597343,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 145.0
+      },
+      "instance_index": 4,
+      "n_rung3": 2547,
+      "n_samples": 5000,
+      "n_strictly_feasible": 126,
+      "sweep_seed": 16448235973081859711
+    },
+    {
+      "cost_ref_usd": 72942.47194952484,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.8
+          }
+        ],
+        "span_ft": 128.0
+      },
+      "instance_index": 5,
+      "n_rung3": 2790,
+      "n_samples": 5000,
+      "n_strictly_feasible": 183,
+      "sweep_seed": 2569146471088859254
+    },
+    {
+      "cost_ref_usd": 70078.1170588611,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 23.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.4
+          }
+        ],
+        "span_ft": 139.0
+      },
+      "instance_index": 6,
+      "n_rung3": 3379,
+      "n_samples": 5000,
+      "n_strictly_feasible": 233,
+      "sweep_seed": 1749318759610081913
+    },
+    {
+      "cost_ref_usd": 83227.76407879754,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": 25.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.1
+          }
+        ],
+        "span_ft": 151.0
+      },
+      "instance_index": 7,
+      "n_rung3": 3183,
+      "n_samples": 5000,
+      "n_strictly_feasible": 96,
+      "sweep_seed": 18211717704797204215
+    },
+    {
+      "cost_ref_usd": 85735.97059634182,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": 24.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.8
+          }
+        ],
+        "span_ft": 147.0
+      },
+      "instance_index": 8,
+      "n_rung3": 3250,
+      "n_samples": 5000,
+      "n_strictly_feasible": 92,
+      "sweep_seed": 13008131998661202997
+    },
+    {
+      "cost_ref_usd": 83279.13666591217,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.3
+          }
+        ],
+        "span_ft": 152.0
+      },
+      "instance_index": 9,
+      "n_rung3": 2457,
+      "n_samples": 5000,
+      "n_strictly_feasible": 232,
+      "sweep_seed": 2710959347947821323
+    },
+    {
+      "cost_ref_usd": 79689.07117776612,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.6
+          }
+        ],
+        "span_ft": 156.0
+      },
+      "instance_index": 10,
+      "n_rung3": 2414,
+      "n_samples": 5000,
+      "n_strictly_feasible": 178,
+      "sweep_seed": 1360307757430227195
+    },
+    {
+      "cost_ref_usd": 76917.21580600174,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.3
+          }
+        ],
+        "span_ft": 142.0
+      },
+      "instance_index": 11,
+      "n_rung3": 2535,
+      "n_samples": 5000,
+      "n_strictly_feasible": 238,
+      "sweep_seed": 6091063652223914538
+    },
+    {
+      "cost_ref_usd": 59240.59016133397,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.6
+          }
+        ],
+        "span_ft": 120.0
+      },
+      "instance_index": 12,
+      "n_rung3": 2963,
+      "n_samples": 5000,
+      "n_strictly_feasible": 282,
+      "sweep_seed": 6526298081964035572
+    },
+    {
+      "cost_ref_usd": 86584.68920358234,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": 25.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.7
+          }
+        ],
+        "span_ft": 152.0
+      },
+      "instance_index": 13,
+      "n_rung3": 3159,
+      "n_samples": 5000,
+      "n_strictly_feasible": 49,
+      "sweep_seed": 11813726597345908409
+    },
+    {
+      "cost_ref_usd": 79822.7019505162,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 25.0,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.8
+          }
+        ],
+        "span_ft": 149.0
+      },
+      "instance_index": 14,
+      "n_rung3": 3196,
+      "n_samples": 5000,
+      "n_strictly_feasible": 142,
+      "sweep_seed": 10192262804094026689
+    },
+    {
+      "cost_ref_usd": 89100.82010493333,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 147.0
+      },
+      "instance_index": 15,
+      "n_rung3": 2526,
+      "n_samples": 5000,
+      "n_strictly_feasible": 133,
+      "sweep_seed": 9617277140693480350
+    },
+    {
+      "cost_ref_usd": 84448.72061073188,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.9
+          }
+        ],
+        "span_ft": 148.0
+      },
+      "instance_index": 16,
+      "n_rung3": 2551,
+      "n_samples": 5000,
+      "n_strictly_feasible": 169,
+      "sweep_seed": 16942686825491090874
+    },
+    {
+      "cost_ref_usd": 70511.90136858611,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.6
+          }
+        ],
+        "span_ft": 138.0
+      },
+      "instance_index": 17,
+      "n_rung3": 2652,
+      "n_samples": 5000,
+      "n_strictly_feasible": 235,
+      "sweep_seed": 1720562232390597800
+    },
+    {
+      "cost_ref_usd": 94891.72784330242,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 24.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.9
+          }
+        ],
+        "span_ft": 147.0
+      },
+      "instance_index": 18,
+      "n_rung3": 3231,
+      "n_samples": 5000,
+      "n_strictly_feasible": 157,
+      "sweep_seed": 13101863116153113777
+    },
+    {
+      "cost_ref_usd": 71260.96874063341,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.2
+          }
+        ],
+        "span_ft": 151.0
+      },
+      "instance_index": 19,
+      "n_rung3": 2427,
+      "n_samples": 5000,
+      "n_strictly_feasible": 204,
+      "sweep_seed": 11534118754833929857
+    },
+    {
+      "cost_ref_usd": 63926.27076879384,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 132.0
+      },
+      "instance_index": 20,
+      "n_rung3": 2746,
+      "n_samples": 5000,
+      "n_strictly_feasible": 169,
+      "sweep_seed": 15275071368100257407
+    },
+    {
+      "cost_ref_usd": 66880.4528940989,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": 21.0,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -5.0
+          }
+        ],
+        "span_ft": 124.0
+      },
+      "instance_index": 21,
+      "n_rung3": 3631,
+      "n_samples": 5000,
+      "n_strictly_feasible": 99,
+      "sweep_seed": 13471262068521890154
+    },
+    {
+      "cost_ref_usd": 67400.87945798834,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": 22.0,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.8
+          }
+        ],
+        "span_ft": 130.0
+      },
+      "instance_index": 22,
+      "n_rung3": 3450,
+      "n_samples": 5000,
+      "n_strictly_feasible": 144,
+      "sweep_seed": 1161854816982873064
+    },
+    {
+      "cost_ref_usd": 86417.17590580856,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.5
+          }
+        ],
+        "span_ft": 135.0
+      },
+      "instance_index": 23,
+      "n_rung3": 2694,
+      "n_samples": 5000,
+      "n_strictly_feasible": 140,
+      "sweep_seed": 4089715063379223119
+    },
+    {
+      "cost_ref_usd": 106135.71876422096,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.7
+          }
+        ],
+        "span_ft": 160.0
+      },
+      "instance_index": 24,
+      "n_rung3": 2280,
+      "n_samples": 5000,
+      "n_strictly_feasible": 117,
+      "sweep_seed": 2628557591746230226
+    },
+    {
+      "cost_ref_usd": 74943.59467890995,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.4
+          }
+        ],
+        "span_ft": 151.0
+      },
+      "instance_index": 25,
+      "n_rung3": 2429,
+      "n_samples": 5000,
+      "n_strictly_feasible": 166,
+      "sweep_seed": 1682637359498011204
+    },
+    {
+      "cost_ref_usd": 73005.32298566421,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.5
+          }
+        ],
+        "span_ft": 145.0
+      },
+      "instance_index": 26,
+      "n_rung3": 2491,
+      "n_samples": 5000,
+      "n_strictly_feasible": 226,
+      "sweep_seed": 16142511163210406178
+    },
+    {
+      "cost_ref_usd": 77922.39284791242,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.3
+          }
+        ],
+        "span_ft": 139.0
+      },
+      "instance_index": 27,
+      "n_rung3": 2668,
+      "n_samples": 5000,
+      "n_strictly_feasible": 162,
+      "sweep_seed": 9025748028497998475
+    },
+    {
+      "cost_ref_usd": 100229.26312133633,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 25.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.3
+          }
+        ],
+        "span_ft": 153.0
+      },
+      "instance_index": 28,
+      "n_rung3": 3225,
+      "n_samples": 5000,
+      "n_strictly_feasible": 105,
+      "sweep_seed": 5369675056217577911
+    },
+    {
+      "cost_ref_usd": 78351.9628993183,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 240,
+        "depth_limit_ft": 23.0,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.4
+          }
+        ],
+        "span_ft": 137.0
+      },
+      "instance_index": 29,
+      "n_rung3": 3427,
+      "n_samples": 5000,
+      "n_strictly_feasible": 150,
+      "sweep_seed": 6138163551495591530
+    },
+    {
+      "cost_ref_usd": 65026.102745009826,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 500,
+        "depth_limit_ft": 20.5,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -3.5
+          }
+        ],
+        "span_ft": 123.0
+      },
+      "instance_index": 30,
+      "n_rung3": 3654,
+      "n_samples": 5000,
+      "n_strictly_feasible": 192,
+      "sweep_seed": 3748412557917947585
+    },
+    {
+      "cost_ref_usd": 97792.28516780408,
+      "instance": {
+        "cost_ref_usd": null,
+        "defl_denom": 360,
+        "depth_limit_ft": null,
+        "load_cases": [
+          {
+            "level": "bottom",
+            "longitudinal_kip": 0.0,
+            "w_kip_per_ft": -4.2
+          }
+        ],
+        "span_ft": 157.0
+      },
+      "instance_index": 31,
+      "n_rung3": 2361,
+      "n_samples": 5000,
+      "n_strictly_feasible": 120,
+      "sweep_seed": 10094613675926773650
+    }
+  ],
+  "roster_seed": 7106521602475165645,
+  "stamp": {
+    "catalog_sha256": "1c4b9e7771e892719caa93130a8ed1ee60bef82c4f73d639543c064fbb27877a",
+    "created_utc": "2026-07-21T17:17:00.553900+00:00",
+    "git_dirty": true,
+    "git_sha": "36743b4de9b5a1d1010fdffb37ada1a23412516c",
+    "run_id": "20260721T171700Z_36743b4"
+  }
+}

@@ -106,7 +106,9 @@ def test_geometry_sanity(n_bays: int) -> None:
 def test_node_set_symmetric_about_midspan(n_bays: int) -> None:
     span_ft = 96.0
     geometry = expand_warren(span_ft=span_ft, n_bays=n_bays, depth_ft=8.0)
-    coordinates = {(round(node.x_ft, 9), round(node.y_ft, 9)) for node in geometry.nodes}
+    coordinates = {
+        (round(node.x_ft, 9), round(node.y_ft, 9)) for node in geometry.nodes
+    }
     mirrored = {(round(span_ft - x, 9), y) for x, y in coordinates}
     assert coordinates == mirrored
 

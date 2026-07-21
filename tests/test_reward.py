@@ -6,6 +6,8 @@ by hand. One integration test walks the known-good design through the real
 pipeline to confirm the reward stage now lands on rung 3.
 """
 
+from dataclasses import replace
+
 import pytest
 
 from trussRL.capacity import MemberCapacity
@@ -16,10 +18,13 @@ from trussRL.loads import LoadCase
 from trussRL.reward import (
     COST_PER_NODE_USD,
     RUNG3_FLOOR,
+    RewardBreakdown,
+    cost_term,
     deflection_utilization,
     design_cost_usd,
     envelope_utilizations,
     grade,
+    regrade,
     sat,
 )
 from trussRL.schema import TrussDesign
@@ -339,3 +344,72 @@ def test_pipeline_reaches_rung3_on_known_good_design() -> None:
     assert RUNG3_FLOOR <= breakdown.score <= 1.0
     reward_status = next(s for s in trace.stages if s.stage == "reward")
     assert reward_status.state == "ok"
+
+
+def test_cost_term_hand_checks() -> None:
+    assert cost_term(5000.0, None) == 0.0
+    assert cost_term(20000.0, 10000.0) == 0.0  # cost == 2 * ref
+    assert cost_term(30000.0, 10000.0) == 0.0  # cost > 2 * ref clamps
+    assert cost_term(10000.0, 10000.0) == pytest.approx(0.5)  # midpoint
+    assert cost_term(0.0, 10000.0) == pytest.approx(1.0)
+
+
+def test_cost_term_rejects_invalid_cost_ref() -> None:
+    for bad in (0.0, -100.0, float("inf"), float("-inf"), float("nan")):
+        with pytest.raises(ValueError, match="cost_ref_usd"):
+            cost_term(1000.0, bad)
+
+
+def test_regrade_rejects_invalid_cost_ref() -> None:
+    breakdown = RewardBreakdown(score=0.15, rung=2, reason="solver: timeout")
+    for bad in (0.0, -100.0, float("inf"), float("nan")):
+        with pytest.raises(ValueError, match="cost_ref_usd"):
+            regrade(breakdown, bad)
+
+
+def test_regrade_identity_below_rung_3() -> None:
+    for breakdown in (
+        RewardBreakdown(score=0.0, rung=0, reason="parse failure: no JSON"),
+        RewardBreakdown(score=0.10, rung=1, reason="drc: n_bays"),
+        RewardBreakdown(score=0.15, rung=2, reason="solver: timeout"),
+    ):
+        assert regrade(breakdown, 10000.0) is breakdown
+
+
+def test_regrade_rejects_malformed_rung3_breakdown() -> None:
+    malformed = RewardBreakdown(
+        score=0.5, rung=3, reason="solved", u_strength=0.5, cost_total_usd=None
+    )
+    with pytest.raises(ValueError, match="missing fields"):
+        regrade(malformed, 10000.0)
+
+
+def test_regrade_equals_grade_with_cost_ref_via_real_pipeline() -> None:
+    instance = TrussInstance(
+        span_ft=96.0,
+        load_cases=(LoadCase(w_kip_per_ft=-2.0, level="bottom"),),
+    )
+    design = TrussDesign(
+        truss_type="warren",
+        n_bays=8,
+        depth_ft=8.0,
+        top_chord="HSS6X6X3/8",
+        bottom_chord="HSS6X6X3/8",
+        diagonals="HSS4X4X1/4",
+    )
+    pass_1 = run_pipeline(instance, design).breakdown
+    assert pass_1 is not None
+    for cost_ref_usd in (5000.0, 20000.0, 100000.0):
+        with_ref = replace(instance, cost_ref_usd=cost_ref_usd)
+        expected = run_pipeline(with_ref, design).breakdown
+        assert regrade(pass_1, cost_ref_usd) == expected
+
+
+def test_regrade_monotone_in_cost_ref() -> None:
+    outcome = make_outcome(make_solution({0: 50.0, 1: -20.0, 2: -20.0}, dy_in=-1.0))
+    pass_1 = grade(
+        make_instance(), make_geometry(), outcome, make_capacities(), SECTIONS
+    )
+    scores = [regrade(pass_1, ref).score for ref in (5000.0, 10000.0, 50000.0, 1e9)]
+    assert scores == sorted(scores)
+    assert scores[0] >= pass_1.score

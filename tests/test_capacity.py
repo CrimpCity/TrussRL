@@ -14,10 +14,17 @@ import math
 
 import pytest
 
-from trussRL.capacity import (E_KSI, FY_KSI, PHI, SLENDERNESS_BOUNDARY,
-                              compression_capacity_kip,
-                              effective_wall_width_in, has_slender_walls,
-                              member_capacities, tension_capacity_kip)
+from trussRL.capacity import (
+    E_KSI,
+    FY_KSI,
+    PHI,
+    SLENDERNESS_BOUNDARY,
+    compression_capacity_kip,
+    effective_wall_width_in,
+    has_slender_walls,
+    member_capacities,
+    tension_capacity_kip,
+)
 from trussRL.catalog import get_section
 from trussRL.expander import expand_warren
 

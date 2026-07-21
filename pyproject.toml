@@ -20,6 +20,7 @@ dependencies = [
 
 [project.scripts]
 trussrl-pipeline = "trussRL.cli.pipeline:main"
+trussrl-calibrate = "trussRL.cli.calibrate:main"
 
 # RL deps (torch/vllm/trainer) land here at Phase 3; only trussRL.training may import them.
 [project.optional-dependencies]

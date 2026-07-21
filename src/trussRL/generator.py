@@ -1,8 +1,10 @@
-"""The generator is the dataset: seeded procedural instance creation.
+"""Seeded procedural creation of the canonical heavy gravity family.
 
-Spans, loads, and limits are difficulty knobs rather than fixed examples —
-infinite fresh instances, reproducible from a seed, with difficulty
-schedulable during training.
+The 120-160 ft spans and 3.0-5.0 kip/ft loads were selected during reward
+calibration because the earlier, lighter family let too many random designs
+bank the safety credit for free. The default family omits the ``"tight"``
+depth limit because it leaves no strictly feasible designs at the heavier
+loads when paired with the stricter deflection limits.
 """
 
 import math
@@ -12,43 +14,57 @@ from dataclasses import dataclass
 from trussRL.instance import TrussInstance
 from trussRL.loads import LoadCase
 
+GENERATOR_VERSION = "v2"
 GENEROUS_DEPTH_SPAN_FRACTION = 1 / 6
 TIGHT_DEPTH_SPAN_FRACTION = 1 / 14
 DEPTH_LIMIT_STEP_FT = 0.5
-DEPTH_LIMIT_VARIANTS = ("none", "generous", "tight")
+DEPTH_LIMIT_VARIANTS = ("none", "generous")
+SUPPORTED_DEPTH_LIMIT_VARIANTS = (*DEPTH_LIMIT_VARIANTS, "tight")
 
 
 @dataclass(frozen=True)
 class GeneratorConfig:
-    """Difficulty knobs for procedural instance generation (vision section 11).
+    """Difficulty knobs for the canonical heavy gravity family.
 
-    Restricting a tuple field (e.g. ``defl_denoms=(360,)``) is how training
-    schedules difficulty: the generator itself always serves the full
-    family, and a narrower config is how a training script asks for less
-    of it.
+    Restricting a tuple field is how training schedules difficulty: the
+    generator serves the full validated family by default, while a narrower
+    config asks for a subset of it.
+
+    Assumptions:
+        1. The defaults were probed empirically at every corner of the
+           family: the easiest corner (120 ft, 3 kip/ft, no depth limit,
+           L/240) keeps the random-design mean at 0.316, and the
+           worst-feasibility corner (160 ft, 5 kip/ft, generous, L/500)
+           retains enough strictly feasible designs for cost_ref.
+        2. "tight" (span/14) is excluded: at these loads tight combined
+           with L/360 or L/500 has zero strictly feasible designs, which
+           breaks cost_ref derivation. "generous" (span/6) still binds
+           below the DRC ceiling of span/4, so stated-limit mechanics
+           stay exercised.
 
     Attributes:
         span_min_ft: lower bound of the span grid, in feet
         span_max_ft: upper bound of the span grid, in feet
         span_step_ft: span grid step, in feet; the default whole-foot step
-            yields 61 possible spans
+            yields 41 possible spans
         w_min_kip_per_ft: lower bound of the gravity load magnitude grid,
             in kips per foot; sign is applied at build time
         w_max_kip_per_ft: upper bound of the gravity load magnitude grid,
             in kips per foot
         w_step_kip_per_ft: gravity load magnitude grid step, in kips per
             foot
-        depth_limit_variants: depth-limit variants eligible for sampling
+        depth_limit_variants: depth-limit variants eligible for sampling;
+            "tight" is deliberately absent
         defl_denoms: deflection-limit denominators eligible for sampling
         load_level: deck chord level carrying the gravity load, "bottom"
             or "top"
     """
 
-    span_min_ft: float = 60.0
-    span_max_ft: float = 120.0
+    span_min_ft: float = 120.0
+    span_max_ft: float = 160.0
     span_step_ft: float = 1.0
-    w_min_kip_per_ft: float = 0.5
-    w_max_kip_per_ft: float = 4.0
+    w_min_kip_per_ft: float = 3.0
+    w_max_kip_per_ft: float = 5.0
     w_step_kip_per_ft: float = 0.1
     depth_limit_variants: tuple[str, ...] = DEPTH_LIMIT_VARIANTS
     defl_denoms: tuple[int, ...] = (240, 360, 500)
@@ -63,7 +79,7 @@ def sample_grid(
     Assumptions:
         1. The range is an integer multiple of step, so every grid point
            from min_value to max_value is reachable; the generator's
-           default configs are built to guarantee this.
+           default config is built to guarantee this.
 
     Args:
         rng: seeded random source
@@ -94,8 +110,9 @@ def depth_limit_ft(variant: str, span_ft: float) -> float | None:
 
     The generous and tight fractions are rounded up to the nearest half
     foot rather than down or to nearest, so the stated limit never rounds
-    below the DRC depth floor of span/25 — span/14 rounded up always clears
-    it, since span/14 already exceeds span/25.
+    below the DRC depth floor of span/25. ``"tight"`` remains available to
+    explicit custom configurations but is not part of the validated default
+    family.
 
     Args:
         variant: depth-limit variant, one of "none", "generous", "tight"
@@ -115,7 +132,7 @@ def depth_limit_ft(variant: str, span_ft: float) -> float | None:
     elif variant == "tight":
         fraction = TIGHT_DEPTH_SPAN_FRACTION
     else:
-        supported = ", ".join(DEPTH_LIMIT_VARIANTS)
+        supported = ", ".join(SUPPORTED_DEPTH_LIMIT_VARIANTS)
         raise ValueError(
             f"unknown depth_limit variant {variant!r}; supported: {supported}"
         )
@@ -126,15 +143,14 @@ def depth_limit_ft(variant: str, span_ft: float) -> float | None:
 def generate_instance(
     seed: int, config: GeneratorConfig = GeneratorConfig()
 ) -> TrussInstance:
-    """Procedurally generate one Warren-only, gravity-only problem instance.
+    """Procedurally generate one heavy-family gravity-only problem instance.
 
     Assumptions:
         1. Draw order is fixed and part of the reproducibility contract:
            (1) span, (2) load magnitude, (3) depth-limit variant, (4)
            deflection denominator. Inserting, removing, or reordering a
-           draw is a seed-reproducibility break and must be treated as
-           one, since it silently changes what every downstream seed
-           produces.
+           draw is a seed-reproducibility break and must be treated as one,
+           since it silently changes what every downstream seed produces.
 
     Args:
         seed: seed for the instance's private random source
@@ -142,7 +158,7 @@ def generate_instance(
 
     Returns:
         TrussInstance: one gravity-only, single-load-case instance with
-            cost_ref_usd unset (None) pending Unit 9 calibration
+            cost_ref_usd unset (None) pending calibration
     """
     rng = random.Random(seed)
     span_ft = sample_grid(
@@ -166,7 +182,7 @@ def generate_instance(
 def generate_instances(
     seed: int, count: int, config: GeneratorConfig = GeneratorConfig()
 ) -> tuple[TrussInstance, ...]:
-    """Procedurally generate a batch of independent problem instances.
+    """Procedurally generate a batch of independent heavy-family instances.
 
     Assumptions:
         1. Child seeds are derived from the master RNG's getrandbits(64)

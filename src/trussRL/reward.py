@@ -7,6 +7,8 @@ worth. Cost credit is gated by feasibility: cheap-and-broken can never beat
 expensive-and-safe.
 """
 
+import dataclasses
+import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
@@ -208,6 +210,150 @@ def design_cost_usd(
     return member_cost + COST_PER_NODE_USD * geometry.n_nodes
 
 
+def validate_cost_ref(cost_ref_usd: float) -> None:
+    """Reject a cost reference that cannot anchor the graded cost term.
+
+    Assumptions:
+        1. cost_ref_usd comes from the trusted calibration side, never the
+           model, so raising here flags a harness bug rather than scoring
+           model output.
+
+    Args:
+        cost_ref_usd: calibration cost reference in dollars
+
+    Returns:
+        None
+
+    Raises:
+        ValueError: if cost_ref_usd is not finite or not strictly positive.
+    """
+    if not math.isfinite(cost_ref_usd) or cost_ref_usd <= 0.0:
+        raise ValueError(
+            f"cost_ref_usd must be finite and strictly positive, got {cost_ref_usd!r}"
+        )
+
+
+def cost_term(cost_total_usd: float, cost_ref_usd: float | None) -> float:
+    """Graded cost credit relative to the calibration cost reference.
+
+    Full credit at zero cost, linearly decaying to zero credit at twice
+    the reference cost.
+
+    Assumptions:
+        1. A None cost_ref_usd contributes 0.0 rather than raising: Unit
+           9's calibration sweep scores designs before cost_ref exists and
+           derives it from the recorded costs, so raising would deadlock
+           calibration.
+
+    Args:
+        cost_total_usd: total design cost in dollars
+        cost_ref_usd: calibration cost reference in dollars, or None
+            before calibration has set it
+
+    Returns:
+        float: cost credit in [0.0, 1.0]
+
+    Raises:
+        ValueError: if cost_ref_usd is neither None nor finite and
+            strictly positive.
+    """
+    if cost_ref_usd is None:
+        return 0.0
+    validate_cost_ref(cost_ref_usd)
+    return max(0.0, 1.0 - cost_total_usd / (2.0 * cost_ref_usd))
+
+
+def rung3_score(
+    u_strength: float,
+    u_buckling: float,
+    u_defl: float,
+    cost_total_usd: float,
+    cost_ref_usd: float | None,
+) -> tuple[float, float]:
+    """Compute the rung-3 score and feasibility from the graded inputs.
+
+    The single home of the rung-3 formula: 0.20 plus 0.80 times the
+    weighted sat() terms and the feasibility-gated cost term, capped at
+    1.0. grade() and regrade() both call this, so pass-1 scoring and
+    calibration regrading can never disagree.
+
+    Args:
+        u_strength: worst tension-side utilization over members and cases
+        u_buckling: worst compression-side utilization over members and
+            cases
+        u_defl: worst deflection utilization over gravity cases
+        cost_total_usd: total design cost in dollars
+        cost_ref_usd: calibration cost reference in dollars, or None
+            before calibration has set it
+
+    Returns:
+        tuple: (score, feasible) — the final rung-3 score in [0.20, 1.0]
+            and the min of the three sat() terms gating the cost credit
+
+    Raises:
+        ValueError: if cost_ref_usd is neither None nor finite and
+            strictly positive.
+    """
+    feasible = min(sat(u_strength), sat(u_buckling), sat(u_defl))
+    graded = (
+        W_STRENGTH * sat(u_strength)
+        + W_BUCKLING * sat(u_buckling)
+        + W_DEFL * sat(u_defl)
+        + W_COST * cost_term(cost_total_usd, cost_ref_usd) * feasible
+    )
+    return min(1.0, RUNG3_FLOOR + RUNG3_RANGE * graded), feasible
+
+
+def regrade(breakdown: RewardBreakdown, cost_ref_usd: float) -> RewardBreakdown:
+    """Rescore a recorded breakdown against a now-known cost reference.
+
+    Unit 9 scores designs before cost_ref exists (cost term 0.0), derives
+    cost_ref from the recorded costs, then regrades the same breakdowns so
+    the gate distributions match what training will actually see. Only the
+    score changes; every recorded utilization and cost is preserved.
+
+    Assumptions:
+        1. Rungs 0-2 carry no cost term, so their breakdowns are returned
+           unchanged; only rung 3 is recomputed.
+
+    Args:
+        breakdown: a breakdown recorded by a pass-1 grade
+        cost_ref_usd: calibration cost reference in dollars
+
+    Returns:
+        RewardBreakdown: the breakdown with its score recomputed under
+            cost_ref_usd; unchanged below rung 3
+
+    Raises:
+        ValueError: if cost_ref_usd is not finite and strictly positive,
+            or a rung-3 breakdown is missing utilization or cost fields.
+    """
+    validate_cost_ref(cost_ref_usd)
+    if breakdown.rung != 3:
+        return breakdown
+    if (
+        breakdown.u_strength is None
+        or breakdown.u_buckling is None
+        or breakdown.u_defl is None
+        or breakdown.cost_total_usd is None
+    ):
+        raise ValueError(
+            "cannot regrade rung-3 breakdown with missing fields: "
+            f"u_strength={breakdown.u_strength!r}, "
+            f"u_buckling={breakdown.u_buckling!r}, "
+            f"u_defl={breakdown.u_defl!r}, "
+            f"cost_total_usd={breakdown.cost_total_usd!r}"
+        )
+    score, _ = rung3_score(
+        breakdown.u_strength,
+        breakdown.u_buckling,
+        breakdown.u_defl,
+        breakdown.cost_total_usd,
+        cost_ref_usd,
+    )
+    return dataclasses.replace(breakdown, score=score)
+
+
 def grade(
     instance: TrussInstance,
     geometry: TrussGeometry,
@@ -248,20 +394,12 @@ def grade(
     """
     u_strength, u_buckling = envelope_utilizations(solve_outcome, capacities)
     u_defl = deflection_utilization(instance, solve_outcome)
-    feasible = min(sat(u_strength), sat(u_buckling), sat(u_defl))
     cost_total = design_cost_usd(geometry, sections_by_group)
-    if instance.cost_ref_usd is None:
-        cost_term = 0.0
-    else:
-        cost_term = max(0.0, 1.0 - cost_total / (2.0 * instance.cost_ref_usd))
-    graded = (
-        W_STRENGTH * sat(u_strength)
-        + W_BUCKLING * sat(u_buckling)
-        + W_DEFL * sat(u_defl)
-        + W_COST * cost_term * feasible
+    score, feasible = rung3_score(
+        u_strength, u_buckling, u_defl, cost_total, instance.cost_ref_usd
     )
     return RewardBreakdown(
-        score=min(1.0, RUNG3_FLOOR + RUNG3_RANGE * graded),
+        score=score,
         rung=3,
         reason="solved",
         u_strength=u_strength,
