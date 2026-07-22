@@ -4,11 +4,13 @@ description = "RLVR for 2D single span truss"
 version = "1.0.0"
 readme = "README.md"
 license = { text = "Proprietary" }
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.13,<3.14"
 
 dependencies = [
     "matplotlib>=3.11.0",
-    "numpy>=2.5.1",
+    # numpy <2.5 cap comes from numba 0.65.0 (pinned by vLLM); revisit when
+    # vLLM's numba pin moves.
+    "numpy>=2.4.6,<2.5",
     "openseespy>=3.8.0.0",
     "pandas>=3.0.3",
     "pydantic>=2.13.4",
@@ -22,9 +24,17 @@ dependencies = [
 trussrl-pipeline = "trussRL.cli.pipeline:main"
 trussrl-calibrate = "trussRL.cli.calibrate:main"
 
-# RL deps (torch/vllm/trainer) land here at Phase 3; only trussRL.training may import them.
 [project.optional-dependencies]
-training = []
+training = [
+    "accelerate>=1.14.0",
+    "huggingface-hub>=1.24.0",
+    "numba>=0.65.0",
+    "peft>=0.19.1",
+    "torch>=2.11.0",
+    "transformers>=5.14.1",
+    "trl>=1.9.0",
+    "vllm>=0.25; platform_system == 'Linux'",
+]
 
 [dependency-groups]
 dev = [
@@ -92,4 +102,20 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["openseespy.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["huggingface_hub.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "accelerate.*",
+    "numba.*",
+    "peft.*",
+    "torch.*",
+    "transformers.*",
+    "trl.*",
+    "vllm.*",
+]
 ignore_missing_imports = true
