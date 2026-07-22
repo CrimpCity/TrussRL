@@ -53,7 +53,7 @@ def resolve_revision(model_id: str, revision: str) -> str:
     Raises:
         RuntimeError: if the Hub response does not contain a commit SHA
     """
-    resolved_revision = HfApi().repo_info(model_id, revision=revision).sha
+    resolved_revision: str | None = HfApi().repo_info(model_id, revision=revision).sha
     if resolved_revision is None:
         raise RuntimeError(
             f"Hugging Face did not return a commit SHA for {model_id}@{revision}"
