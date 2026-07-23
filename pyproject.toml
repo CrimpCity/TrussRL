@@ -23,6 +23,7 @@ dependencies = [
 [project.scripts]
 trussrl-pipeline = "trussRL.cli.pipeline:main"
 trussrl-calibrate = "trussRL.cli.calibrate:main"
+trussrl-model-check = "trussRL.cli.model_check:main"
 
 [project.optional-dependencies]
 training = [
@@ -109,13 +110,10 @@ module = ["huggingface_hub.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = [
-    "accelerate.*",
-    "numba.*",
-    "peft.*",
-    "torch.*",
-    "transformers.*",
-    "trl.*",
-    "vllm.*",
-]
+module = ["accelerate.*", "numba.*", "peft.*", "torch.*", "vllm.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["transformers.*", "trl.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
