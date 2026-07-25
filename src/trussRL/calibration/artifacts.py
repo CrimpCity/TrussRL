@@ -12,12 +12,15 @@ import json
 import os
 import subprocess
 import tempfile
+from collections.abc import Mapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any, cast
 
 from trussRL.calibration.sweep import CalibrationConfig
 from trussRL.catalog import list_sections
 from trussRL.instance import TrussInstance
+from trussRL.loads import LoadCase
 from trussRL.reward import RewardBreakdown
 from trussRL.schema import TrussDesign
 
@@ -143,6 +146,63 @@ def instance_payload(instance: TrussInstance) -> dict[str, object]:
     payload = dataclasses.asdict(instance)
     payload["load_cases"] = list(payload["load_cases"])
     return payload
+
+
+def instance_from_payload(payload: Mapping[str, object]) -> TrussInstance:
+    """Rebuild a problem instance from its serialized payload.
+
+    Assumptions:
+        1. Strict on shape: extra and missing keys fail at both the
+           instance and load-case level, so a stale or renamed field can
+           never silently half-load into a wrong problem definition.
+        2. JSON round-trips floats exactly, so an instance rebuilt from a
+           written artifact is numerically identical to the original.
+
+    Args:
+        payload: the deserialized payload, as produced by instance_payload
+
+    Returns:
+        TrussInstance: the reconstructed instance, load cases tuple-ized
+
+    Raises:
+        ValueError: if the payload's keys do not exactly match the
+            instance fields, load_cases is not a sequence of mappings, or
+            a load-case entry's keys do not match the LoadCase fields.
+    """
+    expected = {
+        instance_field.name for instance_field in dataclasses.fields(TrussInstance)
+    }
+    actual = set(payload)
+    if actual != expected:
+        extra = sorted(actual - expected)
+        missing = sorted(expected - actual)
+        raise ValueError(
+            f"payload keys do not match TrussInstance fields: "
+            f"extra={extra}, missing={missing}"
+        )
+    cases_payload = payload["load_cases"]
+    if not isinstance(cases_payload, Sequence) or isinstance(
+        cases_payload, (str, bytes)
+    ):
+        raise ValueError(
+            "payload key 'load_cases' must be a sequence of load-case mappings"
+        )
+    case_expected = {case_field.name for case_field in dataclasses.fields(LoadCase)}
+    load_cases: list[LoadCase] = []
+    for case in cases_payload:
+        if not isinstance(case, Mapping):
+            raise ValueError("each load case must be a mapping of LoadCase fields")
+        case_actual = set(case)
+        if case_actual != case_expected:
+            extra = sorted(case_actual - case_expected)
+            missing = sorted(case_expected - case_actual)
+            raise ValueError(
+                f"load-case keys do not match LoadCase fields: "
+                f"extra={extra}, missing={missing}"
+            )
+        load_cases.append(LoadCase(**cast(dict[str, Any], dict(case))))
+    flat = {key: value for key, value in payload.items() if key != "load_cases"}
+    return TrussInstance(**cast(dict[str, Any], flat), load_cases=tuple(load_cases))
 
 
 def design_payload(design: TrussDesign) -> dict[str, object]:

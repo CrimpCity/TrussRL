@@ -11,6 +11,7 @@ from trussRL.calibration.artifacts import (
     catalog_hash,
     config_payload,
     design_payload,
+    instance_from_payload,
     instance_payload,
     provenance_stamp,
     write_json,
@@ -60,6 +61,28 @@ def test_instance_payload_round_trips_fields() -> None:
     assert payload["load_cases"] == [
         {"w_kip_per_ft": -1.5, "level": "bottom", "longitudinal_kip": 0.0}
     ]
+
+
+def test_instance_from_payload_inverts_instance_payload() -> None:
+    instance = TrussInstance(
+        span_ft=90.0,
+        load_cases=(
+            LoadCase(w_kip_per_ft=-1.5, level="bottom"),
+            LoadCase(w_kip_per_ft=0.8, level="top", longitudinal_kip=12.0),
+        ),
+        depth_limit_ft=12.5,
+        defl_denom=240,
+        cost_ref_usd=45_000.0,
+    )
+    assert instance_from_payload(instance_payload(instance)) == instance
+
+
+def test_instance_from_payload_round_trips_frozen_cost_ref_entry() -> None:
+    cost_ref_path = Path(__file__).parent.parent / "artifacts" / "cost_ref.json"
+    payload = json.loads(cost_ref_path.read_text())
+    entry = payload["instances"][0]["instance"]
+    instance = instance_from_payload(entry)
+    assert instance_payload(instance) == entry
 
 
 def test_design_and_breakdown_and_config_payload_shapes() -> None:

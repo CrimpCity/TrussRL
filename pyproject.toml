@@ -24,6 +24,7 @@ dependencies = [
 trussrl-pipeline = "trussRL.cli.pipeline:main"
 trussrl-calibrate = "trussRL.cli.calibrate:main"
 trussrl-model-check = "trussRL.cli.model_check:main"
+trussrl-reward-bench = "trussRL.cli.reward_bench:main"
 
 [project.optional-dependencies]
 training = [
@@ -81,6 +82,7 @@ ignore = ["D100", "D104", "D211", "D213"]
 fixable = ["ALL"]
 
 [tool.mypy]
+strict = true
 disallow_untyped_defs = true
 disallow_untyped_decorators = false
 exclude = ["^build/", "^dist/", "^tests/"]
@@ -88,7 +90,6 @@ mypy_path = "src"
 explicit_package_bases = true
 namespace_packages = true
 files = ["src/trussRL", "scripts"]
-strict = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
