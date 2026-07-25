@@ -8,3 +8,5 @@ it was produced from. These values must never be policy-dependent.
 - `cost_ref.json` — per-instance cost normalization reference
 - `sweep_best.json` — best score found by the random sweep per instance
 - `gate_reports/` — section 9 sanity-gate reports from calibration runs
+- `reward_bench/` — pool-vs-serial reward adapter benchmarks with
+  failure-injection results and the provisional adoption verdict
