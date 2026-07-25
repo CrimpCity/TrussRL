@@ -7,13 +7,7 @@ policy is only ever scored on what it was shown.
 from trussRL.catalog import list_sections
 from trussRL.instance import TrussInstance
 from trussRL.loads import LoadCase
-from trussRL.reward import (
-    COST_PER_NODE_USD,
-    W_BUCKLING,
-    W_COST,
-    W_DEFL,
-    W_STRENGTH,
-)
+from trussRL.reward import COST_PER_NODE_USD, W_BUCKLING, W_COST, W_DEFL, W_STRENGTH
 
 INTRO = "You are designing a simply supported steel truss to span a gap."
 
