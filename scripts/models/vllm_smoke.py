@@ -22,7 +22,7 @@ MODEL_ID = "Qwen/Qwen3-4B-Base"
 MODEL_REVISION = "906bfd4b4dc7f14ee4320094d8b41684abff8539"
 
 
-@njit
+@njit  # type: ignore[untyped-decorator]
 def jit_answer() -> int:
     """Return a constant through Numba JIT compilation.
 

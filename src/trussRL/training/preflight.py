@@ -107,13 +107,13 @@ TRL_PREFLIGHT_CHECKS: tuple[TrlPreflightCheck, ...] = (
         expected_default=True,
     ),
     TrlPreflightCheck(
-        name="vllm_importance_sampling_cap",
+        name="vllm_importance_sampling_clip_max",
         description=(
-            "actual default vllm_importance_sampling_cap read and "
+            "actual default vllm_importance_sampling_clip_max read and "
             "recorded, never assumed"
         ),
         kind=KIND_RECORD,
-        fields=("vllm_importance_sampling_cap",),
+        fields=("vllm_importance_sampling_clip_max",),
     ),
     TrlPreflightCheck(
         name="vllm_colocate_lora_sync",
