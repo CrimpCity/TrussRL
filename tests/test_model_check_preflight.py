@@ -17,6 +17,7 @@ from trussRL.training.preflight import (
     STATUS_VERIFIED,
     TRL_PREFLIGHT_CHECKS,
     TrlPreflightCheck,
+    TrlPreflightResult,
     evaluate_trl_preflight,
     preflight_passed,
 )
@@ -38,7 +39,7 @@ def healthy_field_defaults() -> dict[str, object]:
         "scale_rewards": "group",
         "cast_lm_head_to_fp32": False,
         "vllm_importance_sampling_correction": True,
-        "vllm_importance_sampling_cap": 2.0,
+        "vllm_importance_sampling_clip_max": 3.0,
         "vllm_mode": "colocate",
         "num_generations": 8,
         "generation_batch_size": None,
@@ -61,7 +62,9 @@ def healthy_acceptance_errors() -> dict[str, str | None]:
     }
 
 
-def result_by_name(results: tuple, name: str):
+def result_by_name(
+    results: tuple[TrlPreflightResult, ...], name: str
+) -> TrlPreflightResult:
     """Find one verdict by check name.
 
     Args:
@@ -90,14 +93,14 @@ def test_healthy_observations_pass_with_only_runtime_deferred() -> None:
         assert result.status in (STATUS_VERIFIED, STATUS_RECORDED)
 
 
-def test_cap_is_recorded_with_actual_default_and_no_expectation() -> None:
+def test_clip_max_is_recorded_with_actual_default_and_no_expectation() -> None:
     results = evaluate_trl_preflight(
         healthy_field_defaults(), healthy_acceptance_errors()
     )
-    cap = result_by_name(results, "vllm_importance_sampling_cap")
-    assert cap.status == STATUS_RECORDED
-    assert cap.expected is None
-    assert cap.actual == 2.0
+    clip_max = result_by_name(results, "vllm_importance_sampling_clip_max")
+    assert clip_max.status == STATUS_RECORDED
+    assert clip_max.expected is None
+    assert clip_max.actual == 3.0
 
 
 def test_wrong_default_is_a_mismatch_and_fails_preflight() -> None:
@@ -112,11 +115,11 @@ def test_wrong_default_is_a_mismatch_and_fails_preflight() -> None:
 
 def test_absent_field_is_api_drift_missing() -> None:
     defaults = healthy_field_defaults()
-    del defaults["vllm_importance_sampling_cap"]
+    del defaults["vllm_importance_sampling_clip_max"]
     results = evaluate_trl_preflight(defaults, healthy_acceptance_errors())
-    cap = result_by_name(results, "vllm_importance_sampling_cap")
-    assert cap.status == STATUS_MISSING
-    assert "vllm_importance_sampling_cap" in cap.detail
+    clip_max = result_by_name(results, "vllm_importance_sampling_clip_max")
+    assert clip_max.status == STATUS_MISSING
+    assert "vllm_importance_sampling_clip_max" in clip_max.detail
     assert not preflight_passed(results)
 
 

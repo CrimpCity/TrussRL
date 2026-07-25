@@ -12,7 +12,9 @@ import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any, cast
 
+import pytest
 from typer.testing import CliRunner
 
 import trussRL.cli.model_check as model_check_cli
@@ -166,7 +168,7 @@ def healthy_config_observations() -> dict[str, object]:
         "scale_rewards": "group",
         "cast_lm_head_to_fp32": False,
         "vllm_importance_sampling_correction": True,
-        "vllm_importance_sampling_cap": 2.0,
+        "vllm_importance_sampling_clip_max": 3.0,
         "vllm_mode": "colocate",
         "num_generations": 8,
         "generation_batch_size": None,
@@ -251,7 +253,7 @@ def raise_missing_extra() -> SimpleNamespace:
     )
 
 
-def patch_backend(monkeypatch, backend: SimpleNamespace) -> None:
+def patch_backend(monkeypatch: pytest.MonkeyPatch, backend: SimpleNamespace) -> None:
     """Point the CLI's load_backend at a stub backend.
 
     Args:
@@ -265,7 +267,7 @@ def patch_backend(monkeypatch, backend: SimpleNamespace) -> None:
     )
 
 
-def read_manifest(output_dir: Path) -> dict[str, object]:
+def read_manifest(output_dir: Path) -> dict[str, Any]:
     """Load the single manifest the CLI wrote.
 
     Args:
@@ -276,7 +278,7 @@ def read_manifest(output_dir: Path) -> dict[str, object]:
     """
     manifests = list((output_dir / "model_check").glob("model_check_*.json"))
     assert len(manifests) == 1
-    return json.loads(manifests[0].read_text())
+    return cast(dict[str, Any], json.loads(manifests[0].read_text()))
 
 
 def test_verifier_import_never_loads_torch() -> None:
@@ -289,7 +291,9 @@ def test_cli_module_import_never_loads_torch() -> None:
     subprocess.run([sys.executable, "-c", code], check=True)
 
 
-def test_happy_path_writes_passing_manifest(monkeypatch, tmp_path: Path) -> None:
+def test_happy_path_writes_passing_manifest(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     patch_backend(monkeypatch, make_backend())
     result = runner.invoke(model_check_cli.app, ["--output-dir", str(tmp_path)])
     assert result.exit_code == 0, result.output
@@ -321,7 +325,9 @@ def test_happy_path_writes_passing_manifest(monkeypatch, tmp_path: Path) -> None
     assert len(preflight["items"]) == len(TRL_PREFLIGHT_CHECKS)
 
 
-def test_missing_training_extra_exits_with_remedy(monkeypatch, tmp_path: Path) -> None:
+def test_missing_training_extra_exits_with_remedy(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     monkeypatch.setattr(model_check_cli, "load_backend", raise_missing_extra)
     result = runner.invoke(model_check_cli.app, ["--output-dir", str(tmp_path)])
     assert result.exit_code == 1
@@ -330,7 +336,7 @@ def test_missing_training_extra_exits_with_remedy(monkeypatch, tmp_path: Path) -
 
 
 def test_failing_check_fails_run_but_writes_manifest(
-    monkeypatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     patch_backend(monkeypatch, make_backend(check_tokenizer=failing_tokenizer_check))
     result = runner.invoke(model_check_cli.app, ["--output-dir", str(tmp_path)])
@@ -344,7 +350,9 @@ def test_failing_check_fails_run_but_writes_manifest(
     assert "RuntimeError" in tokenizer["detail"]
 
 
-def test_mismatched_preflight_check_fails_run(monkeypatch, tmp_path: Path) -> None:
+def test_mismatched_preflight_check_fails_run(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     observations = healthy_config_observations()
     errors = observations["acceptance_errors"]
     assert isinstance(errors, dict)
@@ -360,7 +368,9 @@ def test_mismatched_preflight_check_fails_run(monkeypatch, tmp_path: Path) -> No
     assert manifest["trl_preflight"]["static_complete"] is False
 
 
-def test_download_failure_skips_model_checks(monkeypatch, tmp_path: Path) -> None:
+def test_download_failure_skips_model_checks(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     patch_backend(monkeypatch, make_backend(resolve_and_download=failing_resolve))
     result = runner.invoke(model_check_cli.app, ["--output-dir", str(tmp_path)])
     assert result.exit_code == 1
@@ -372,7 +382,9 @@ def test_download_failure_skips_model_checks(monkeypatch, tmp_path: Path) -> Non
     assert manifest["passed"] is False
 
 
-def test_cpu_only_environment_is_a_hard_failure(monkeypatch, tmp_path: Path) -> None:
+def test_cpu_only_environment_is_a_hard_failure(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     patch_backend(
         monkeypatch,
         make_backend(
