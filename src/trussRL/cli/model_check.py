@@ -17,13 +17,13 @@ from rich.console import Console
 from rich.table import Table
 
 from trussRL.calibration.artifacts import provenance_stamp, write_json
+from trussRL.training.model_ids import MODEL_ID, MODEL_REVISION
 from trussRL.training.preflight import (
     STATUS_DEFERRED,
     TrlPreflightResult,
     evaluate_trl_preflight,
     preflight_passed,
 )
-from trussRL.training.model_ids import MODEL_ID, MODEL_REVISION
 
 app = typer.Typer(add_completion=False)
 console = Console()

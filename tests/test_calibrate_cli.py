@@ -14,11 +14,7 @@ from typer.testing import CliRunner, Result
 
 import trussRL.cli.calibrate as calibrate_cli
 from trussRL.calibration.gates import GateCheck, GateReport
-from trussRL.calibration.sweep import (
-    DesignSample,
-    InstanceCalibration,
-    SweepBest,
-)
+from trussRL.calibration.sweep import DesignSample, InstanceCalibration, SweepBest
 from trussRL.generator import GeneratorConfig, generate_instances
 from trussRL.instance import TrussInstance
 from trussRL.reward import RewardBreakdown

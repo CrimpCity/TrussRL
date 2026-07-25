@@ -17,9 +17,9 @@ import trussRL.cli.reward_bench as reward_bench
 from trussRL.baselines.random_design import sample_design
 from trussRL.calibration.artifacts import instance_from_payload, instance_payload
 from trussRL.cli.reward_bench import (
-    BatchBenchmark,
     CRASH_SENTINEL,
     HANG_SENTINEL,
+    BatchBenchmark,
     InjectionResult,
     TimingSummary,
     crash_on_sentinel_task,

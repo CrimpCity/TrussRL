@@ -13,11 +13,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from scripts.data.hss_filter import (
-    detect_line_terminator,
-    load_hss,
-    read_header_line,
-)
+from scripts.data.hss_filter import detect_line_terminator, load_hss, read_header_line
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 INPUT_PATHS = {
