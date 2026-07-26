@@ -13,11 +13,13 @@ from pathlib import Path
 import pytest
 
 from trussRL.calibration.roster import (DROP_REASON_COLLISION,
-                                        DROP_REASON_DUPLICATE, RosterCandidate,
+                                        DROP_REASON_DUPLICATE,
+                                        TRAIN_ROSTER_SIZE, RosterCandidate,
                                         check_difficulty_spread,
                                         derive_generator_child_seeds,
                                         eval_split_indices, instance_key,
-                                        load_eval_split, select_candidates)
+                                        load_eval_split, load_train_roster,
+                                        select_candidates)
 from trussRL.calibration.sweep import derive_calibration_seeds
 from trussRL.generator import (depth_limit_ft, generate_instance,
                                generate_instances)
@@ -266,6 +268,136 @@ def test_load_eval_split_rejects_mismatched_artifacts(
 def test_load_eval_split_missing_artifact_raises(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError):
         load_eval_split(tmp_path)
+
+
+def write_doctored_train_roster(tmp_path: Path, doctor) -> Path:
+    """Copy the committed train roster artifact and doctor it.
+
+    Args:
+        tmp_path: destination directory
+        doctor: mutation applied to the payload in place
+
+    Returns:
+        Path: the directory holding the doctored artifact
+    """
+    payload = json.loads((ARTIFACTS_DIR / "train_roster.json").read_text())
+    doctor(payload)
+    (tmp_path / "train_roster.json").write_text(json.dumps(payload))
+    return tmp_path
+
+
+def doctor_shrink_consistently(payload: dict) -> None:
+    """Shrink the roster to one entry with a matching config echo.
+
+    Args:
+        payload: the artifact payload to mutate
+
+    Returns: None
+    """
+    payload["instances"] = payload["instances"][:1]
+    payload["config"]["n_target"] = 1
+
+
+def doctor_count_echo(payload: dict) -> None:
+    """Give the config echo an off-by-one n_target.
+
+    Args:
+        payload: the artifact payload to mutate
+
+    Returns: None
+    """
+    payload["config"]["n_target"] = 511
+
+
+def doctor_config_extra_key(payload: dict) -> None:
+    """Add an unexpected key to the config echo.
+
+    Args:
+        payload: the artifact payload to mutate
+
+    Returns: None
+    """
+    payload["config"]["surprise"] = 1
+
+
+def doctor_config_missing_key(payload: dict) -> None:
+    """Remove a required key from the config echo.
+
+    Args:
+        payload: the artifact payload to mutate
+
+    Returns: None
+    """
+    del payload["config"]["generator_version"]
+
+
+def doctor_generator_extra_key(payload: dict) -> None:
+    """Add an unexpected key to the generator echo.
+
+    Args:
+        payload: the artifact payload to mutate
+
+    Returns: None
+    """
+    payload["config"]["generator"]["surprise"] = 1
+
+
+def doctor_entry_extra_key(payload: dict) -> None:
+    """Add an unexpected key to one roster entry.
+
+    Args:
+        payload: the artifact payload to mutate
+
+    Returns: None
+    """
+    payload["instances"][0]["surprise"] = 1
+
+
+def doctor_entry_missing_key(payload: dict) -> None:
+    """Remove a required key from one roster entry.
+
+    Args:
+        payload: the artifact payload to mutate
+
+    Returns: None
+    """
+    del payload["instances"][0]["n_rung3"]
+
+
+@pytest.mark.parametrize(
+    "doctor",
+    [
+        doctor_shrink_consistently,
+        doctor_count_echo,
+        doctor_config_extra_key,
+        doctor_config_missing_key,
+        doctor_generator_extra_key,
+        doctor_entry_extra_key,
+        doctor_entry_missing_key,
+    ],
+)
+def test_load_train_roster_rejects_malformed_artifacts(
+    tmp_path: Path, doctor
+) -> None:
+    write_doctored_train_roster(tmp_path, doctor)
+    with pytest.raises(ValueError):
+        load_train_roster(tmp_path)
+
+
+def doctor_nothing(payload: dict) -> None:
+    """Leave the payload untouched, as the doctoring positive control.
+
+    Args:
+        payload: the artifact payload to leave unchanged
+
+    Returns: None
+    """
+
+
+def test_load_train_roster_accepts_undoctored_copy(tmp_path: Path) -> None:
+    write_doctored_train_roster(tmp_path, doctor_nothing)
+    roster = load_train_roster(tmp_path)
+    assert len(roster) == TRAIN_ROSTER_SIZE
 
 
 def test_instance_key_ignores_cost_ref_and_separates_params() -> None:

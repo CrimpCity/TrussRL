@@ -20,7 +20,7 @@ import json
 import math
 import random
 from collections import Counter
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence, Set
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal, cast
@@ -37,6 +37,20 @@ EVAL_SPLIT_REMAINDER = 3
 COST_REF_FILENAME = "cost_ref.json"
 SWEEP_BEST_FILENAME = "sweep_best.json"
 TRAIN_ROSTER_FILENAME = "train_roster.json"
+TRAIN_ROSTER_SIZE = 512
+TRAIN_ENTRY_KEYS = frozenset(
+    {
+        "instance_index",
+        "generator_index",
+        "instance_seed",
+        "instance",
+        "sweep_seed",
+        "n_samples",
+        "n_rung3",
+        "n_strictly_feasible",
+        "cost_ref_usd",
+    }
+)
 
 SPREAD_DEFL_DENOMS = (240, 360, 500)
 SPREAD_DEFL_PROPORTION_TOLERANCE = 0.10
@@ -862,15 +876,39 @@ def train_roster_payload(
     }
 
 
+def validate_exact_keys(actual: Iterable[str], expected: Set[str], label: str) -> None:
+    """Require a payload section's key set to match an expected set exactly.
+
+    Args:
+        actual: the payload section whose keys are checked; a mapping
+            iterates as its keys
+        expected: the exact key set the section must carry
+        label: payload-section name used in the error message
+
+    Returns: None
+
+    Raises:
+        ValueError: if the key sets differ, reporting the extra and
+            missing keys.
+    """
+    actual_keys = set(actual)
+    if actual_keys != expected:
+        extra = sorted(actual_keys - expected)
+        missing = sorted(expected - actual_keys)
+        raise ValueError(f"{label} keys do not match: extra={extra}, missing={missing}")
+
+
 def load_train_roster(
     artifacts_dir: Path = Path("artifacts"),
 ) -> tuple[TrussInstance, ...]:
     """Load the frozen training roster with cost_ref_usd applied.
 
-    The dataset entry point for training: strict on shape and grading
-    constants, but it does not recompute spread statistics — proving the
-    frozen artifact's spread is the acceptance tests' job, not a dataset
-    loader's.
+    The dataset entry point for training: strict on shape, count, and
+    grading constants, but it does not recompute spread statistics —
+    proving the frozen artifact's spread is the acceptance tests' job,
+    not a dataset loader's. The instance count is pinned to
+    TRAIN_ROSTER_SIZE rather than trusted from the artifact's own config
+    echo, so a shrunken or padded roster can never load.
 
     Args:
         artifacts_dir: directory holding train_roster.json
@@ -881,10 +919,11 @@ def load_train_roster(
 
     Raises:
         FileNotFoundError: if the artifact is missing.
-        ValueError: if the top-level shape is wrong, the instance count
-            does not match the config echo, an entry is misindexed or
-            malformed, a cost_ref_usd is non-finite or non-positive, or
-            two entries share an identity key.
+        ValueError: if the top-level, config-echo, generator-echo, or
+            per-entry key sets are wrong, the config echo or the instance
+            count deviates from TRAIN_ROSTER_SIZE, an entry is misindexed
+            or malformed, a cost_ref_usd is non-finite or non-positive,
+            or two entries share an identity key.
     """
     payload = read_json_payload(artifacts_dir / TRAIN_ROSTER_FILENAME)
     expected_keys = {
@@ -897,21 +936,29 @@ def load_train_roster(
         "spread",
         "instances",
     }
-    if set(payload) != expected_keys:
-        extra = sorted(set(payload) - expected_keys)
-        missing = sorted(expected_keys - set(payload))
-        raise ValueError(
-            f"train roster keys do not match: extra={extra}, missing={missing}"
-        )
-    n_target = payload["config"]["n_target"]
+    validate_exact_keys(payload, expected_keys, "train roster")
+    config = payload["config"]
+    expected_config_keys = {
+        config_field.name for config_field in dataclasses.fields(RosterConfig)
+    } | {"generator_version"}
+    validate_exact_keys(config, expected_config_keys, "train roster config echo")
+    expected_generator_keys = {
+        generator_field.name for generator_field in dataclasses.fields(GeneratorConfig)
+    }
+    validate_exact_keys(
+        config["generator"], expected_generator_keys, "train roster generator echo"
+    )
+    n_target = config["n_target"]
     entries = payload["instances"]
-    if len(entries) != n_target:
+    if n_target != TRAIN_ROSTER_SIZE or len(entries) != TRAIN_ROSTER_SIZE:
         raise ValueError(
-            f"train roster has {len(entries)} instances, config echo says {n_target}"
+            f"train roster must freeze exactly {TRAIN_ROSTER_SIZE} instances: "
+            f"config echo says {n_target!r}, artifact holds {len(entries)}"
         )
     seen: set[tuple[object, ...]] = set()
     instances: list[TrussInstance] = []
     for position, entry in enumerate(entries):
+        validate_exact_keys(entry, TRAIN_ENTRY_KEYS, f"train roster entry {position}")
         if entry["instance_index"] != position:
             raise ValueError(
                 f"train roster entry at position {position} has "

@@ -12,17 +12,13 @@ import math
 from pathlib import Path
 
 from trussRL.calibration.artifacts import instance_from_payload
-from trussRL.calibration.roster import (
-    check_difficulty_spread,
-    derive_generator_child_seeds,
-    instance_key,
-    load_train_roster,
-    spread_check_payload,
-)
+from trussRL.calibration.roster import (TRAIN_ROSTER_SIZE,
+                                        check_difficulty_spread,
+                                        derive_generator_child_seeds,
+                                        instance_key, load_train_roster,
+                                        spread_check_payload)
 
 ARTIFACTS_DIR = Path(__file__).resolve().parents[1] / "artifacts"
-
-N_TRAIN_INSTANCES = 512
 
 
 def train_roster_payload_from_disk() -> dict:
@@ -68,10 +64,10 @@ def test_train_roster_exists_with_expected_shape() -> None:
         "catalog_sha256",
         "run_id",
     }
-    assert payload["config"]["n_target"] == N_TRAIN_INSTANCES
+    assert payload["config"]["n_target"] == TRAIN_ROSTER_SIZE
     assert payload["config"]["generator_version"] == "v2"
     assert payload["held_out"]["indices"] == [3, 7, 11, 15, 19, 23, 27, 31]
-    assert len(payload["instances"]) == N_TRAIN_INSTANCES
+    assert len(payload["instances"]) == TRAIN_ROSTER_SIZE
     cost_ref, sweep_best = calibration_payloads_from_disk()
     for key, filename, source_artifact in (
         ("cost_ref", "cost_ref.json", cost_ref),
@@ -148,7 +144,7 @@ def test_train_roster_preserves_difficulty_spread() -> None:
 
 def test_load_train_roster_applies_cost_ref() -> None:
     roster = load_train_roster(ARTIFACTS_DIR)
-    assert len(roster) == N_TRAIN_INSTANCES
+    assert len(roster) == TRAIN_ROSTER_SIZE
     for instance in roster:
         assert instance.cost_ref_usd is not None
         assert math.isfinite(instance.cost_ref_usd)
