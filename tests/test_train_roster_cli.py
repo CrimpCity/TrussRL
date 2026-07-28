@@ -11,6 +11,7 @@ import dataclasses
 import hashlib
 import json
 from pathlib import Path
+from typing import Any, Sequence, cast
 
 import pytest
 from typer.testing import CliRunner, Result
@@ -24,6 +25,8 @@ from trussRL.reward import RewardBreakdown
 from trussRL.schema import TrussDesign
 
 runner = CliRunner()
+
+JsonDict = dict[str, Any]
 
 FAKE_DESIGN = TrussDesign(
     truss_type="warren",
@@ -43,7 +46,7 @@ FAKE_BREAKDOWN = RewardBreakdown(
     cost_total_usd=12000.0,
     feasible=1.0,
 )
-FAKE_STAMP = {
+FAKE_STAMP: JsonDict = {
     "created_utc": "2026-01-01T00:00:00+00:00",
     "git_sha": "0" * 40,
     "git_dirty": False,
@@ -69,7 +72,7 @@ FAILING_SPREAD = (
 )
 
 
-def instance_payload_dict(span_ft: float) -> dict:
+def instance_payload_dict(span_ft: float) -> JsonDict:
     """Build a serialized fixture instance with a distinctive span.
 
     Args:
@@ -234,7 +237,11 @@ class FlakyCalibrate:
         return fake_calibrate_instance(instance, seed, n_samples)
 
 
-def fake_spread_pass(train_instances, train_cost_refs, calibration_cost_refs):
+def fake_spread_pass(
+    train_instances: Sequence[TrussInstance],
+    train_cost_refs: Sequence[float],
+    calibration_cost_refs: Sequence[float],
+) -> tuple[SpreadCheck, ...]:
     """Spread stand-in where every gate passes.
 
     Args:
@@ -248,7 +255,11 @@ def fake_spread_pass(train_instances, train_cost_refs, calibration_cost_refs):
     return PASSING_SPREAD
 
 
-def fake_spread_fail(train_instances, train_cost_refs, calibration_cost_refs):
+def fake_spread_fail(
+    train_instances: Sequence[TrussInstance],
+    train_cost_refs: Sequence[float],
+    calibration_cost_refs: Sequence[float],
+) -> tuple[SpreadCheck, ...]:
     """Spread stand-in where a gate fails.
 
     Args:
@@ -300,15 +311,11 @@ def test_run_writes_artifact_and_exits_zero(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     write_calibration_fixtures(tmp_path)
-    monkeypatch.setattr(
-        train_roster_cli, "calibrate_instance", fake_calibrate_instance
-    )
-    monkeypatch.setattr(
-        train_roster_cli, "check_difficulty_spread", fake_spread_pass
-    )
+    monkeypatch.setattr(train_roster_cli, "calibrate_instance", fake_calibrate_instance)
+    monkeypatch.setattr(train_roster_cli, "check_difficulty_spread", fake_spread_pass)
     result = invoke(tmp_path)
     assert result.exit_code == 0, result.output
-    payload = json.loads((tmp_path / "train_roster.json").read_text())
+    payload = cast(JsonDict, json.loads((tmp_path / "train_roster.json").read_text()))
     assert set(payload["stamp"]) == {
         "created_utc",
         "git_sha",
@@ -348,12 +355,10 @@ def test_run_backfills_to_exact_target_on_calibration_errors(
     monkeypatch.setattr(
         train_roster_cli, "calibrate_instance", FlakyCalibrate(n_failures=2)
     )
-    monkeypatch.setattr(
-        train_roster_cli, "check_difficulty_spread", fake_spread_pass
-    )
+    monkeypatch.setattr(train_roster_cli, "check_difficulty_spread", fake_spread_pass)
     result = invoke(tmp_path)
     assert result.exit_code == 0, result.output
-    payload = json.loads((tmp_path / "train_roster.json").read_text())
+    payload = cast(JsonDict, json.loads((tmp_path / "train_roster.json").read_text()))
     assert len(payload["instances"]) == 3
     errors = [
         item
@@ -372,9 +377,7 @@ def test_stream_exhaustion_exits_one_and_writes_nothing(
     monkeypatch.setattr(
         train_roster_cli, "calibrate_instance", erroring_calibrate_instance
     )
-    monkeypatch.setattr(
-        train_roster_cli, "check_difficulty_spread", fake_spread_pass
-    )
+    monkeypatch.setattr(train_roster_cli, "check_difficulty_spread", fake_spread_pass)
     result = invoke(tmp_path)
     assert result.exit_code == 1
     assert "exhausted" in result.output
@@ -387,12 +390,8 @@ def test_spread_failure_exits_one_and_preserves_existing_artifact(
     write_calibration_fixtures(tmp_path)
     preexisting = '{"frozen": "do not touch"}'
     (tmp_path / "train_roster.json").write_text(preexisting)
-    monkeypatch.setattr(
-        train_roster_cli, "calibrate_instance", fake_calibrate_instance
-    )
-    monkeypatch.setattr(
-        train_roster_cli, "check_difficulty_spread", fake_spread_fail
-    )
+    monkeypatch.setattr(train_roster_cli, "calibrate_instance", fake_calibrate_instance)
+    monkeypatch.setattr(train_roster_cli, "check_difficulty_spread", fake_spread_fail)
     result = invoke(tmp_path)
     assert result.exit_code == 1
     assert (tmp_path / "train_roster.json").read_text() == preexisting
