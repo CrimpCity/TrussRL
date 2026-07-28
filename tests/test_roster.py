@@ -9,20 +9,26 @@ covered by the acceptance tests against the frozen artifact.
 import json
 import math
 from pathlib import Path
+from typing import Any, Callable, cast
 
 import pytest
 
-from trussRL.calibration.roster import (DROP_REASON_COLLISION,
-                                        DROP_REASON_DUPLICATE,
-                                        TRAIN_ROSTER_SIZE, RosterCandidate,
-                                        check_difficulty_spread,
-                                        derive_generator_child_seeds,
-                                        eval_split_indices, instance_key,
-                                        load_eval_split, load_train_roster,
-                                        select_candidates)
+from trussRL.calibration.roster import (
+    DROP_REASON_COLLISION,
+    DROP_REASON_DUPLICATE,
+    TRAIN_ROSTER_SIZE,
+    RosterCandidate,
+    SpreadCheck,
+    check_difficulty_spread,
+    derive_generator_child_seeds,
+    eval_split_indices,
+    instance_key,
+    load_eval_split,
+    load_train_roster,
+    select_candidates,
+)
 from trussRL.calibration.sweep import derive_calibration_seeds
-from trussRL.generator import (depth_limit_ft, generate_instance,
-                               generate_instances)
+from trussRL.generator import depth_limit_ft, generate_instance, generate_instances
 from trussRL.instance import TrussInstance
 from trussRL.loads import LoadCase
 
@@ -30,6 +36,8 @@ ARTIFACTS_DIR = Path(__file__).resolve().parents[1] / "artifacts"
 
 SEED_ONE_ROSTER_SEED = 10499958131665514997
 SEED_ZERO_ROSTER_SEED = 7106521602475165645
+
+JsonDict = dict[str, Any]
 
 
 def make_instance(
@@ -123,7 +131,7 @@ def healthy_cost_refs(count: int) -> list[float]:
 CALIBRATION_COST_REFS = [60000.0 + 1000.0 * index for index in range(32)]
 
 
-def check_by_gate(checks: tuple, gate: str):
+def check_by_gate(checks: tuple[SpreadCheck, ...], gate: str) -> SpreadCheck:
     """Pick one named check out of a spread-check tuple.
 
     Args:
@@ -172,7 +180,9 @@ def test_load_eval_split_returns_eight_calibrated_instances() -> None:
         assert item.sweep_best_design.n_bays >= 1
 
 
-def write_doctored_artifacts(tmp_path: Path, target: str, doctor) -> Path:
+def write_doctored_artifacts(
+    tmp_path: Path, target: str, doctor: Callable[[JsonDict], None]
+) -> Path:
     """Copy the committed calibration artifacts and doctor one of them.
 
     Args:
@@ -185,14 +195,14 @@ def write_doctored_artifacts(tmp_path: Path, target: str, doctor) -> Path:
         Path: the directory holding the doctored pair
     """
     for name in ("cost_ref.json", "sweep_best.json"):
-        payload = json.loads((ARTIFACTS_DIR / name).read_text())
+        payload = cast(JsonDict, json.loads((ARTIFACTS_DIR / name).read_text()))
         if name == target:
             doctor(payload)
         (tmp_path / name).write_text(json.dumps(payload))
     return tmp_path
 
 
-def doctor_run_id(payload: dict) -> None:
+def doctor_run_id(payload: JsonDict) -> None:
     """Give the payload a mismatching run_id.
 
     Args:
@@ -203,7 +213,7 @@ def doctor_run_id(payload: dict) -> None:
     payload["stamp"]["run_id"] = "19700101T000000Z_0000000"
 
 
-def doctor_roster_seed(payload: dict) -> None:
+def doctor_roster_seed(payload: JsonDict) -> None:
     """Give the payload a mismatching roster_seed.
 
     Args:
@@ -214,7 +224,7 @@ def doctor_roster_seed(payload: dict) -> None:
     payload["roster_seed"] += 1
 
 
-def doctor_generator_config(payload: dict) -> None:
+def doctor_generator_config(payload: JsonDict) -> None:
     """Give the payload a mismatching generator config.
 
     Args:
@@ -225,7 +235,7 @@ def doctor_generator_config(payload: dict) -> None:
     payload["config"]["generator"]["span_min_ft"] = 100.0
 
 
-def doctor_instance_payload(payload: dict) -> None:
+def doctor_instance_payload(payload: JsonDict) -> None:
     """Give one held-out instance a mismatching span.
 
     Args:
@@ -236,7 +246,7 @@ def doctor_instance_payload(payload: dict) -> None:
     payload["instances"][3]["instance"]["span_ft"] += 1.0
 
 
-def doctor_cost_ref_value(payload: dict) -> None:
+def doctor_cost_ref_value(payload: JsonDict) -> None:
     """Give one held-out instance a mismatching cost_ref_usd.
 
     Args:
@@ -258,7 +268,7 @@ def doctor_cost_ref_value(payload: dict) -> None:
     ],
 )
 def test_load_eval_split_rejects_mismatched_artifacts(
-    tmp_path: Path, target: str, doctor
+    tmp_path: Path, target: str, doctor: Callable[[JsonDict], None]
 ) -> None:
     write_doctored_artifacts(tmp_path, target, doctor)
     with pytest.raises(ValueError):
@@ -270,7 +280,9 @@ def test_load_eval_split_missing_artifact_raises(tmp_path: Path) -> None:
         load_eval_split(tmp_path)
 
 
-def write_doctored_train_roster(tmp_path: Path, doctor) -> Path:
+def write_doctored_train_roster(
+    tmp_path: Path, doctor: Callable[[JsonDict], None]
+) -> Path:
     """Copy the committed train roster artifact and doctor it.
 
     Args:
@@ -280,13 +292,15 @@ def write_doctored_train_roster(tmp_path: Path, doctor) -> Path:
     Returns:
         Path: the directory holding the doctored artifact
     """
-    payload = json.loads((ARTIFACTS_DIR / "train_roster.json").read_text())
+    payload = cast(
+        JsonDict, json.loads((ARTIFACTS_DIR / "train_roster.json").read_text())
+    )
     doctor(payload)
     (tmp_path / "train_roster.json").write_text(json.dumps(payload))
     return tmp_path
 
 
-def doctor_shrink_consistently(payload: dict) -> None:
+def doctor_shrink_consistently(payload: JsonDict) -> None:
     """Shrink the roster to one entry with a matching config echo.
 
     Args:
@@ -298,7 +312,7 @@ def doctor_shrink_consistently(payload: dict) -> None:
     payload["config"]["n_target"] = 1
 
 
-def doctor_count_echo(payload: dict) -> None:
+def doctor_count_echo(payload: JsonDict) -> None:
     """Give the config echo an off-by-one n_target.
 
     Args:
@@ -309,7 +323,7 @@ def doctor_count_echo(payload: dict) -> None:
     payload["config"]["n_target"] = 511
 
 
-def doctor_config_extra_key(payload: dict) -> None:
+def doctor_config_extra_key(payload: JsonDict) -> None:
     """Add an unexpected key to the config echo.
 
     Args:
@@ -320,7 +334,7 @@ def doctor_config_extra_key(payload: dict) -> None:
     payload["config"]["surprise"] = 1
 
 
-def doctor_config_missing_key(payload: dict) -> None:
+def doctor_config_missing_key(payload: JsonDict) -> None:
     """Remove a required key from the config echo.
 
     Args:
@@ -331,7 +345,7 @@ def doctor_config_missing_key(payload: dict) -> None:
     del payload["config"]["generator_version"]
 
 
-def doctor_generator_extra_key(payload: dict) -> None:
+def doctor_generator_extra_key(payload: JsonDict) -> None:
     """Add an unexpected key to the generator echo.
 
     Args:
@@ -342,7 +356,7 @@ def doctor_generator_extra_key(payload: dict) -> None:
     payload["config"]["generator"]["surprise"] = 1
 
 
-def doctor_entry_extra_key(payload: dict) -> None:
+def doctor_entry_extra_key(payload: JsonDict) -> None:
     """Add an unexpected key to one roster entry.
 
     Args:
@@ -353,7 +367,7 @@ def doctor_entry_extra_key(payload: dict) -> None:
     payload["instances"][0]["surprise"] = 1
 
 
-def doctor_entry_missing_key(payload: dict) -> None:
+def doctor_entry_missing_key(payload: JsonDict) -> None:
     """Remove a required key from one roster entry.
 
     Args:
@@ -377,14 +391,14 @@ def doctor_entry_missing_key(payload: dict) -> None:
     ],
 )
 def test_load_train_roster_rejects_malformed_artifacts(
-    tmp_path: Path, doctor
+    tmp_path: Path, doctor: Callable[[JsonDict], None]
 ) -> None:
     write_doctored_train_roster(tmp_path, doctor)
     with pytest.raises(ValueError):
         load_train_roster(tmp_path)
 
 
-def doctor_nothing(payload: dict) -> None:
+def doctor_nothing(payload: JsonDict) -> None:
     """Leave the payload untouched, as the doctoring positive control.
 
     Args:
@@ -450,8 +464,9 @@ def test_check_difficulty_spread_passes_healthy_roster() -> None:
 
 def test_check_difficulty_spread_fails_collapsed_defl_denom() -> None:
     instances = [
-        make_instance(inst.span_ft, abs(inst.load_cases[0].w_kip_per_ft),
-                      inst.depth_limit_ft, 360)
+        make_instance(
+            inst.span_ft, abs(inst.load_cases[0].w_kip_per_ft), inst.depth_limit_ft, 360
+        )
         for inst in healthy_train_instances()
     ]
     checks = check_difficulty_spread(
@@ -466,8 +481,9 @@ def test_check_difficulty_spread_fails_collapsed_defl_denom() -> None:
 
 def test_check_difficulty_spread_fails_missing_depth_variant() -> None:
     instances = [
-        make_instance(inst.span_ft, abs(inst.load_cases[0].w_kip_per_ft),
-                      None, inst.defl_denom)
+        make_instance(
+            inst.span_ft, abs(inst.load_cases[0].w_kip_per_ft), None, inst.defl_denom
+        )
         for inst in healthy_train_instances()
     ]
     checks = check_difficulty_spread(
@@ -481,8 +497,12 @@ def test_check_difficulty_spread_fails_missing_depth_variant() -> None:
 
 def test_check_difficulty_spread_fails_narrow_span() -> None:
     instances = [
-        make_instance(135.0 + (index % 6), 3.0 + 0.1 * (index % 21),
-                      None if index % 2 == 0 else 23.5, (240, 360, 500)[index % 3])
+        make_instance(
+            135.0 + (index % 6),
+            3.0 + 0.1 * (index % 21),
+            None if index % 2 == 0 else 23.5,
+            (240, 360, 500)[index % 3],
+        )
         for index in range(123)
     ]
     checks = check_difficulty_spread(

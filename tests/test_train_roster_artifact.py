@@ -10,18 +10,24 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from typing import Any, cast
 
 from trussRL.calibration.artifacts import instance_from_payload
-from trussRL.calibration.roster import (TRAIN_ROSTER_SIZE,
-                                        check_difficulty_spread,
-                                        derive_generator_child_seeds,
-                                        instance_key, load_train_roster,
-                                        spread_check_payload)
+from trussRL.calibration.roster import (
+    TRAIN_ROSTER_SIZE,
+    check_difficulty_spread,
+    derive_generator_child_seeds,
+    instance_key,
+    load_train_roster,
+    spread_check_payload,
+)
 
 ARTIFACTS_DIR = Path(__file__).resolve().parents[1] / "artifacts"
 
+JsonDict = dict[str, Any]
 
-def train_roster_payload_from_disk() -> dict:
+
+def train_roster_payload_from_disk() -> JsonDict:
     """Read the committed train roster artifact.
 
     Args: None
@@ -29,10 +35,10 @@ def train_roster_payload_from_disk() -> dict:
     Returns:
         dict: the deserialized artifact payload
     """
-    return json.loads((ARTIFACTS_DIR / "train_roster.json").read_text())
+    return cast(JsonDict, json.loads((ARTIFACTS_DIR / "train_roster.json").read_text()))
 
 
-def calibration_payloads_from_disk() -> tuple[dict, dict]:
+def calibration_payloads_from_disk() -> tuple[JsonDict, JsonDict]:
     """Read the committed calibration artifacts.
 
     Args: None
@@ -40,8 +46,10 @@ def calibration_payloads_from_disk() -> tuple[dict, dict]:
     Returns:
         tuple: the cost_ref payload and the sweep_best payload
     """
-    cost_ref = json.loads((ARTIFACTS_DIR / "cost_ref.json").read_text())
-    sweep_best = json.loads((ARTIFACTS_DIR / "sweep_best.json").read_text())
+    cost_ref = cast(JsonDict, json.loads((ARTIFACTS_DIR / "cost_ref.json").read_text()))
+    sweep_best = cast(
+        JsonDict, json.loads((ARTIFACTS_DIR / "sweep_best.json").read_text())
+    )
     return cost_ref, sweep_best
 
 
@@ -128,9 +136,7 @@ def test_train_roster_preserves_difficulty_spread() -> None:
         instance_from_payload(entry["instance"]) for entry in payload["instances"]
     ]
     train_cost_refs = [entry["cost_ref_usd"] for entry in payload["instances"]]
-    calibration_cost_refs = [
-        entry["cost_ref_usd"] for entry in cost_ref["instances"]
-    ]
+    calibration_cost_refs = [entry["cost_ref_usd"] for entry in cost_ref["instances"]]
     checks = check_difficulty_spread(
         train_instances, train_cost_refs, calibration_cost_refs
     )
