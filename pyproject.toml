@@ -26,6 +26,7 @@ trussrl-calibrate = "trussRL.cli.calibrate:main"
 trussrl-model-check = "trussRL.cli.model_check:main"
 trussrl-reward-bench = "trussRL.cli.reward_bench:main"
 trussrl-train-roster = "trussRL.cli.train_roster:main"
+trussrl-rollout-gate = "trussRL.cli.rollout_gate:main"
 
 [project.optional-dependencies]
 training = [
